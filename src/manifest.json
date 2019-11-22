@@ -17,9 +17,9 @@
     "logLevel": "off"
   },
   "router": {
-    "entry": "Demo",
+    "entry": "Index",
     "pages": {
-      "Demo": {
+      "Index": {
         "component": "index"
       },
       "DemoDetail": {
