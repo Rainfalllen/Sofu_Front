@@ -9,8 +9,8 @@
 <script>
 export default {
   private: {
-    text: '欢迎使用快应用卡片',
-    des: '卡片是一种轻量级的快应用，快应用卡片使快应用能够在其他app和系统里提供可扩展的app功能'
+    text: '欢迎使用Sofu',
+    des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
   }
 }
 </script>
