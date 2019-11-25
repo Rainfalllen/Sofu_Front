@@ -1,35 +1,99 @@
 <template>
   <!-- template里只能有一个根节点 -->
   <div class="register-page">
-    <div class="title">
-      <text>{{text}}</text>
+    <div>
+      <text class="title">{{text}}</text>
     </div>
     <div class="input">
-      <input type="text" placeholder="请输入手机号"></input>
-      <input type="text" placeholder="请输入验证码"></input>
-      <input type="button" value="获取验证码"></input>
+      <input type="text" placeholder="请输入手机号" class="phone-number"></input>
+      <div class="ver-code">
+        <input type="text" placeholder="请输入验证码" class="ver-code-input"></input>
+        <input type="button" value="获取验证码" class="ver-code-btn"></input>
+      </div>
     </div>
     <div class="to-next">
-      <input type="button" value="下一步"></input>
+      <input type="button" value="下一步" class="to-next-btn" onclick="routePwdInput"></input>
     </div>
-    <text>{{des}}</text>
   </div>
 </template>
 
 <script>
 /* eslint-disable linebreak-style */
+import router from '@system.router'
 export default {
   private: {
-    text: '欢迎使用快应用卡片',
-    des: '卡片是一种轻量级的快应用，快应用卡片使快应用能够在其他app和系统里提供可扩展的app功能'
+    text: '输入手机号',
+  },
+  routePwdInput () {
+    router.push ({
+      uri: '/Pwd-input'
+    })
   }
 }
 </script>
 
 <style>
-  .register-page {
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-  }
+.register-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-page .title {
+  margin-top: 200px;
+  font-size: 90px;
+  color: #f68bcd;
+}
+
+.register-page .input {
+  display: flex;
+  flex-direction: column;
+  margin-top: 200px;
+}
+
+.register-page .input .phone-number {
+  width: 750px;
+  height: 120px;
+  border: 1px solid #b4b4b4;
+  border-radius: 20px;
+  font-size: 50px;
+  padding-left: 30px;
+}
+
+.register-page .input .ver-code{
+  margin-top: 50px;
+  width: 750px;
+  height: 120px;
+}
+
+.register-page .input .ver-code .ver-code-input{
+  width: 450px;
+  font-size: 50px;
+  padding-left: 30px;
+  border: 1px solid #b4b4b4;
+  border-radius: 20px;
+}
+
+.register-page .input .ver-code .ver-code-btn{
+  width: 300px;
+  font-size: 50px;
+  margin-left: 30px;
+  border-radius: 20px;
+  background-color:#ffffff; 
+  border: 1px solid #b4b4b4;
+  color: #b4b4b4;
+}
+
+.register-page .to-next{
+  margin-top: 200px;
+}
+
+.register-page .to-next .to-next-btn{
+  width: 400px;
+  height: 150px;
+  font-size: 50px;
+  background-color: #f68bcd;
+  border-radius: 20px;
+  color: #ffffff;
+}
 </style>

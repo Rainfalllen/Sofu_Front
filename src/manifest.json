@@ -15,7 +15,7 @@
   ],
   "config": {
     "logLevel": "off",
-    "designWidth": 640
+    "designWidth": 1080
   },
   "router": {
     "entry": "Index",
@@ -28,6 +28,12 @@
       },
       "Register": {
         "component": "register"
+      },
+      "My-skin": {
+        "component": "my-skin"
+      },
+      "Pwd-input": {
+        "component": "pwd-input"
       }
     },
     "widgets": {
@@ -55,6 +61,14 @@
       },
       "Register": {
         "titleBarText": "注册",
+        "menu": false
+      },
+      "My-skin": {
+        "titleBarText": "我的肤质",
+        "menu": false
+      },
+      "Pwd-input": {
+        "titleBarText": "输入密码",
         "menu": false
       }
     }
