@@ -2,22 +2,27 @@
   <!-- template里只能有一个根节点 -->
   <div class="login-page">
     <div class="logo">
-    <text class="title">欢迎打开{{title}}</text>
+      <image src="../Common/logo.jpg"></image>
+    </div>
+    <div>
+      <text class="title">{{title}}</text>
     </div>
     <!-- 点击跳转详情页 -->
-    <input class="btn" type="button" value="跳转到详情页" onclick="routeDetail" />
+    <input class="btn" type="button" value="注册" onclick="routeDetail" />
   </div>
 </template>
 
 <script>
+/* eslint-disable linebreak-style */
 import router from '@system.router'
 export default {
+  // eslint-disable-next-line linebreak-style
   private: {
-    title: '示例页面'
+    title: 'Sofu'
   },
   routeDetail () {
     router.push ({
-      uri: '/DemoDetail'
+      uri: '/Register'
     })
   }
 }
@@ -25,24 +30,36 @@ export default {
 
 
 <style>
-.demo-page {
+.login-page {
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
 
+.logo{
+  width: 200px;
+  height: 200px;
+}
+
+.login-page .logo{
+  width: 200px;
+  height: 200px;
+}
+
 .title {
+    margin-top:30px; 
     font-size: 40px;
     text-align: center;
   }
 
 .btn {
-    width: 550px;
-    height: 86px;
+    width: 250px;
+    height: 60px;
     margin-top: 75px;
-    border-radius: 43px;
-    background-color: #09ba07;
+    border-radius: 30px;
+    background-color: #ffffff;
     font-size: 30px;
-    color: #ffffff;
+    color: #f68bcd;
+    border: 1px solid #777777;
   }
   </style>
