@@ -23,7 +23,7 @@
 <script>
 export default {
     private: {
-        text: '输入密码',
+        text: '完善个人信息',
         // eslint-disable-next-line quotes
         sexCheck: ["男", "女"]
     },
