@@ -6,10 +6,13 @@
         </div>
         <div class="input">
             <input type="text" placeholder="请输入昵称" class="nickname-input"></input>
-            <div for="{{sexCheck}}">
-                <input type="checkbox" class="sexCheckbox">{{item}}</input>
+            <div class="select-sex">
+            <div for="{{sexCheck}}" class="sex-radio">
+                <input type="radio"></input>
+                <text>{{$item}}</text>
             </div>
-            <input type="text" placeholder="请再次输入密码" class="birthday-datecheck"></input>
+            </div>
+            <input type="date" placeholder="2019" class="birthday-datecheck"></input>
         </div>
         <div class="finish">
             <input type="button" value="下一步" class="to-next-btn"></input>
@@ -22,7 +25,7 @@ export default {
     private: {
         text: '输入密码',
         // eslint-disable-next-line quotes
-        sexCheck: ["男", "女"],
+        sexCheck: ["男", "女"]
     },
 }
 </script>
@@ -44,6 +47,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-top: 200px;
+  align-items: center;
 }
 
 .register-page .input .nickname-input {
@@ -55,14 +59,15 @@ export default {
   padding-left: 30px;
 }
 
-.register-page .input .pwd-second {
-  margin-top: 50px;
-  width: 750px;
-  height: 120px;
-  font-size: 50px;
-  padding-left: 30px;
-  border: 1px solid #b4b4b4;
-  border-radius: 20px;
+.register-page .input .select-sex {
+    flex-direction: row;
+    margin-top: 30px;
+}
+
+.register-page .input .select-sex .sex-radio{
+  margin-left:10px;
+  margin-right: 10px; 
+  font-size: 40px;
 }
 
 .register-page .to-next {
