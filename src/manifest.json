@@ -37,6 +37,9 @@
       },
       "Add-info": {
         "component": "add-info"
+      },
+      "Home": {
+        "component": "home"
       }
     },
     "widgets": {
@@ -76,6 +79,10 @@
       },
       "Add-info": {
         "titleBarText": "完善个人信息",
+        "menu": false
+      },
+      "Home": {
+        "titleBarText": "首页",
         "menu": false
       }
     }

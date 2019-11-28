@@ -7,26 +7,48 @@
         <div class="input">
             <input type="text" placeholder="请输入昵称" class="nickname-input"></input>
             <div class="select-sex">
-            <div for="{{sexCheck}}" class="sex-radio">
-                <input type="radio"></input>
-                <text>{{$item}}</text>
+            <div for="{{sexCheck}}" class="sex-block">
+                <input type="radio" class="sex-radio"></input>
+                <text class="sex-text">{{$item}}</text>
             </div>
             </div>
-            <input type="date" placeholder="2019" class="birthday-datecheck"></input>
+            <div class="birthday-block">
+                <text style="font-size:60px;">生日：</text>
+                <picker type="date" value="{{date}}" class="birthday-datecheck"  onchange="getDate"></picker>
+            </div>
         </div>
         <div class="finish">
-            <input type="button" value="下一步" class="to-next-btn"></input>
+            <input type="button" value="开启你的Sofu之旅吧~" class="finish-btn" onclick="routeHome" ></input>
         </div>
     </div>
 </template>
 
 <script>
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+    import router from '@system.router';
 export default {
     private: {
         text: '完善个人信息',
         // eslint-disable-next-line quotes
-        sexCheck: ["男", "女"]
+        sexCheck: ["男", "女"],
+        date: ''
     },
+    onInit () {
+      const date = new Date()
+      const Y = date.getFullYear()
+      const M = date.getMonth() + 1
+      const D = date.getDate()
+      this.date = Y + '-' + M + '-' + D
+    },
+    getDate (e) {
+      this.date = e.year + '-' + (e.month + 1) + '-' + e.day
+    },
+      routeHome () {
+    router.push ({
+      uri: '/Home'
+    })
+  }
 }
 </script>
 
@@ -61,21 +83,39 @@ export default {
 
 .register-page .input .select-sex {
     flex-direction: row;
-    margin-top: 30px;
+    margin-top: 80px;
+}
+
+.register-page .input .select-sex .sex-block{
+  margin-left:10px;
+  margin-right: 10px; 
 }
 
 .register-page .input .select-sex .sex-radio{
-  margin-left:10px;
-  margin-right: 10px; 
-  font-size: 40px;
+  margin-left:20px;
+  margin-right: 20px; 
+  width: 50px;
+  height: 50px;
 }
 
-.register-page .to-next {
+.register-page .input .select-sex .sex-block .sex-text{
+  font-size: 60px;
+}
+
+.register-page .input .birthday-block{
+  margin-top: 80px;
+}
+
+.register-page .input .birthday-block .birthday-datecheck{  
+  font-size: 60px;
+}
+
+.register-page .finish {
   margin-top: 200px;
 }
 
-.register-page .to-next .to-next-btn {
-  width: 400px;
+.register-page .finish .finish-btn {
+  width: 600px;
   height: 150px;
   font-size: 50px;
   background-color: #f68bcd;

@@ -1,5 +1,6 @@
 {
     "hap.typesVersion": "1050",
     "files.autoSave": "afterDelay",
-    "editor.fontSize": 15
+    "editor.fontSize": 15,
+    "hap-debugger.autoCompile": true
 }
