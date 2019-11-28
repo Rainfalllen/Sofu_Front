@@ -34,6 +34,9 @@
       },
       "Pwd-input": {
         "component": "pwd-input"
+      },
+      "Add-info": {
+        "component": "add-info"
       }
     },
     "widgets": {
@@ -69,6 +72,10 @@
       },
       "Pwd-input": {
         "titleBarText": "输入密码",
+        "menu": false
+      },
+      "Add-info": {
+        "titleBarText": "完善个人信息",
         "menu": false
       }
     }

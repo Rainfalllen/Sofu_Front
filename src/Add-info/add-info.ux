@@ -5,27 +5,25 @@
             <text class="title">{{text}}</text>
         </div>
         <div class="input">
-            <input type="text" placeholder="请输入密码" class="pwd-first"></input>
-            <input type="text" placeholder="请再次输入密码" class="pwd-second"></input>
+            <input type="text" placeholder="请输入昵称" class="nickname-input"></input>
+            <div for="{{sexCheck}}">
+                <input type="checkbox" class="sexCheckbox">{{item}}</input>
+            </div>
+            <input type="text" placeholder="请再次输入密码" class="birthday-datecheck"></input>
         </div>
-        <div class="to-next">
-            <input type="button" value="下一步" class="to-next-btn" onclick="routeAddInfo"></input>
+        <div class="finish">
+            <input type="button" value="下一步" class="to-next-btn"></input>
         </div>
     </div>
 </template>
 
 <script>
-/* eslint-disable linebreak-style */
-import router from '@system.router'
 export default {
-  private: {
-    text: '输入密码',
-  },
-  routeAddInfo () {
-    router.push ({
-      uri: '/Add-info'
-    })
-  }
+    private: {
+        text: '输入密码',
+        // eslint-disable-next-line quotes
+        sexCheck: ["男", "女"],
+    },
 }
 </script>
 
@@ -48,7 +46,7 @@ export default {
   margin-top: 200px;
 }
 
-.register-page .input .pwd-first {
+.register-page .input .nickname-input {
   width: 750px;
   height: 120px;
   border: 1px solid #b4b4b4;
