@@ -40,6 +40,9 @@
       },
       "Home": {
         "component": "home"
+      },
+      "Skin-test": {
+        "component": "skin-test"
       }
     },
     "widgets": {
@@ -83,6 +86,10 @@
       },
       "Home": {
         "titleBarText": "首页",
+        "menu": false
+      },
+      "Skin-test": {
+        "titleBarText": "肤质测试",
         "menu": false
       }
     }

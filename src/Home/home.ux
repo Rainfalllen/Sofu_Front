@@ -2,7 +2,7 @@
   <!-- template里只能有一个根节点 -->
   <div class="home-page">
     <div class="top-block">
-      <input type="button" class="top-btn" value="再测一次"></input>
+      <input type="button" class="top-btn" value="再测一次" onclick="routeSkinTest"></input>
       <text class="nickname">{{nickname}}</text>
       <input type="button" class="top-btn" value="分享"></input>
     </div>
@@ -36,10 +36,15 @@ export default {
   private: {
     nickname: 'Luxu',
     skinType: ['轻油', '轻耐'],
-    report:{
-      content:"有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。"
+    report: {
+      content: "有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。"
     }
   },
+  routeSkinTest() {
+    router.push({
+      uri: '/Skin-test'
+    })
+  }
 }
 </script>
 
@@ -93,12 +98,11 @@ export default {
   justify-content: center;
 }
 
-.home-page .skin-block .skin-type .skin-words{
+.home-page .skin-block .skin-type .skin-words {
   font-size: 55px;
 }
 
-
-.home-page .report-block{
+.home-page .report-block {
   width: 100%;
   height: 600px;
   display: flex;
@@ -107,19 +111,19 @@ export default {
   align-items: center;
 }
 
-.home-page .report-block .report-title{
+.home-page .report-block .report-title {
   font-size: 60px;
   margin-bottom: 50px;
   font-weight: bold;
 }
 
-.home-page .report-block .report-content{
+.home-page .report-block .report-content {
   font-size: 50px;
   margin-left: 50px;
   margin-right: 50px;
 }
 
-.home-page .report-block .to-more{
+.home-page .report-block .to-more {
   margin-top: 80px;
   font-size: 50px;
   background-color: #ffffff;

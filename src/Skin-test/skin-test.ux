@@ -1,0 +1,104 @@
+<template>
+    <!-- template里只能有一个根节点 -->
+    <div class="skin-test-page">
+        <!-- 头部栏 -->
+        <div class="top-block">
+            <image src="../Common/left-arrow.svg" class="top-icon"></image>
+            <text class="title">{{title}}</text>
+            <image src="../Common/right-arrow.svg" class="top-icon"></image>
+        </div>
+        <div class="cut-line" />
+        <!-- 进度条 -->
+        <div class="progress-block">
+            <progress type="horizontal" percent="50" class="progress" />
+        </div>
+        <!-- 问题及选项 -->
+        <div class="question-block">
+            <text class="question-title">{{question.title}}</text>
+            <div for="{{question.options}}" class="questiono-option">
+                <input type="radio" class="option-radio"></input>
+                <text class="option-label">{{$item}}</text>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+export default {
+    private: {
+        title: '肤质测试',
+        question:{
+            title:'Q1.洗完脸后不在脸上涂任何产品，2-3小时后，你的皮肤会?',
+            options:['粗糙、暗沉','紧绷感','不紧绷，无油光','能看见明显的油光']
+        }
+    },
+
+}
+</script>
+
+<style>
+.skin-test-page {
+  flex-direction: column;
+  align-items: center;
+}
+
+.skin-test-page .top-block {
+  height: 130px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.skin-test-page .top-block .title {
+  font-size: 50px;
+}
+
+.skin-test-page .top-block .top-icon {
+  width: 80px;
+  height: 80px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.skin-test-page .progress-block {
+    width: 800px;
+    height: 100px;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.skin-test-page .progress-block .progress{
+    color: #f68bcd;
+}
+
+.skin-test-page .question-block{
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.skin-test-page .question-block .question-title{
+    width: 800px;
+    font-size: 60px;
+    margin-bottom: 100px;
+}
+
+.skin-test-page .question-block .questiono-option{
+    width: 800px;
+    margin-top: 50px;
+}
+
+.skin-test-page .question-block .questiono-option .option-label{
+    margin-left: 40px;
+    font-size: 50px;
+}
+
+.skin-test-page .cut-line {
+  width: 100%;
+  height: 2px;
+  background-color: #f68bcd;
+}
+</style>

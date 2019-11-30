@@ -9,7 +9,7 @@
             <div class="select-sex">
             <div for="{{sexCheck}}" class="sex-block">
                 <input type="radio" class="sex-radio"></input>
-                <text class="sex-text">{{$item}}</text>
+                <label class="sex-text">{{$item}}</label>
             </div>
             </div>
             <div class="birthday-block">
@@ -44,7 +44,7 @@ export default {
     getDate (e) {
       this.date = e.year + '-' + (e.month + 1) + '-' + e.day
     },
-      routeHome () {
+    routeHome () {
     router.push ({
       uri: '/Home'
     })
