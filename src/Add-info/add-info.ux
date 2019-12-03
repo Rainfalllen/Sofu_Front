@@ -26,7 +26,7 @@
 <script>
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
-    import router from '@system.router';
+    import router from '@system.router'
 export default {
     private: {
         text: '完善个人信息',

@@ -43,6 +43,9 @@
       },
       "Skin-test": {
         "component": "skin-test"
+      },
+      "Search-pdt": {
+        "component": "search-pdt"
       }
     },
     "widgets": {
@@ -90,6 +93,10 @@
       },
       "Skin-test": {
         "titleBarText": "肤质测试",
+        "menu": false
+      },
+      "Search-pdt": {
+        "titleBarText": "搜索",
         "menu": false
       }
     }

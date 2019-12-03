@@ -21,7 +21,7 @@
       <text class="report-title">肤质报告&指南</text>
       <text class="report-content">{{report.content}}</text>
       <div style="justify-content:flex-end;width:100%;">
-        <input type="button" class="to-more" value=">>查看更多"></input>
+        <input type="button" class="to-more" value=">>查看更多" onclick="routeSearch"></input>
       </div>
     </div>
     <div class="cut-line" />
@@ -37,12 +37,17 @@ export default {
     nickname: 'Luxu',
     skinType: ['轻油', '轻耐'],
     report: {
-      content: "有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。"
+      content: '有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。'
     }
   },
   routeSkinTest() {
     router.push({
       uri: '/Skin-test'
+    })
+  },
+  routeSearch() {
+    router.push({
+      uri: '/Search-pdt'
     })
   }
 }
