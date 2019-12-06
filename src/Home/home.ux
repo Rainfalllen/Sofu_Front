@@ -109,7 +109,7 @@ export default {
 <style>
 .home-page .tab-bar {
   display: flex;
-  height: 180px;
+  height: 160px;
   border-color: #f68bcd;
   border-top-width: 2px;
   align-content: center;
@@ -117,7 +117,7 @@ export default {
 }
 
 .home-page .tab-bar .bar-icon{
-  height: 120px;
+  height: 100px;
 }
 
 .home-page .myskin-contain {
