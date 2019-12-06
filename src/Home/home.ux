@@ -1,30 +1,63 @@
 <template>
   <!-- template里只能有一个根节点 -->
   <div class="home-page">
-    <div class="top-block">
-      <input type="button" class="top-btn" value="再测一次" onclick="routeSkinTest"></input>
-      <text class="nickname">{{nickname}}</text>
-      <input type="button" class="top-btn" value="分享"></input>
-    </div>
-    <div class="cut-line" />
-    <!-- 肤质信息展示 -->
-    <div class="skin-block">
-      <div for={{skinType}}>
-        <div class="skin-type">
-          <text class="skin-words">{{$item}}</text>
+    <tabs>
+      <tab-content>
+        <!-- 我的肤质 -->
+        <div class="myskin-contain">
+          <div class="top-block">
+            <input type="button" class="top-btn" value="再测一次" onclick="routeSkinTest"></input>
+            <text class="nickname">{{nickname}}</text>
+            <input type="button" class="top-btn" value="分享"></input>
+          </div>
+          <div class="cut-line" />
+          <!-- 肤质信息展示 -->
+          <div class="skin-block">
+            <div for={{skinType}}>
+              <div class="skin-type">
+                <text class="skin-words">{{$item}}</text>
+              </div>
+            </div>
+          </div>
+          <div class="cut-line" />
+          <!-- 肤质报告展示 -->
+          <div class="report-block">
+            <text class="report-title">肤质报告&指南</text>
+            <text class="report-content">{{report.content}}</text>
+            <div style="justify-content:flex-end;width:100%;">
+              <input type="button" class="to-more" value=">>查看更多" onclick="routeSearch"></input>
+            </div>
+          </div>
+          <div class="cut-line" />
         </div>
-      </div>
-    </div>
-    <div class="cut-line" />
-    <!-- 肤质报告展示 -->
-    <div class="report-block">
-      <text class="report-title">肤质报告&指南</text>
-      <text class="report-content">{{report.content}}</text>
-      <div style="justify-content:flex-end;width:100%;">
-        <input type="button" class="to-more" value=">>查看更多" onclick="routeSearch"></input>
-      </div>
-    </div>
-    <div class="cut-line" />
+        <!-- 搜索 -->
+        <div class="search-contain">
+          <div class="search-block">
+            <div class="search-ipt-block">
+              <image class="search-icon" src="../Common/search.svg"></image>
+              <input type="text" class="search-input"></input>
+            </div>
+            <input type="button" value="搜索" class="search-btn"></input>
+          </div>
+          <div class="cut-line" />
+          <div class="product-block" for="{{productList}}">
+            <div class="product-card">
+              <image src="../Common/logo.jpg" class="product-image"></image>
+              <div class="product-des">
+                <text class="product-title">{{$item.title}}</text>
+                <text class="product-detail">{{$item.detail}}</text>
+              </div>
+            </div>
+            <div class="cut-line" />
+          </div>
+        </div>
+      </tab-content>
+      <tab-bar mode="fixed" class="tab-bar">
+        <image src="../Common/fuzhi-tab.svg" class="bar-icon"></image>
+        <image src="../Common/search-tab.svg" class="bar-icon"></image>
+        <image src="../Common/myinfo-tab.svg" class="bar-icon"></image>
+      </tab-bar>
+    </tabs>
   </div>
 </template>
 
@@ -38,7 +71,22 @@ export default {
     skinType: ['轻油', '轻耐'],
     report: {
       content: '有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。'
-    }
+    },
+    productList: [
+      {
+        title: '这是一个非常长的标题',
+        detail: '这是一条非常短的评论，我竟无言以对。'
+      }, {
+        title: '这是一个非常长的标题',
+        detail: '这是一条非常短的评论，我竟无言以对。'
+      }, {
+        title: '这是一个非常长的标题',
+        detail: '这是一条非常短的评论，我竟无言以对。'
+      }, {
+        title: '这是一个非常长的标题',
+        detail: '这是一条非常短的评论，我竟无言以对。'
+      },
+    ]
   },
   routeSkinTest() {
     router.push({
@@ -55,22 +103,35 @@ export default {
 
 
 <style>
-.home-page {
+.home-page .tab-bar {
+  display: flex;
+  height: 180px;
+  border-color: #f68bcd;
+  border-top-width: 2px;
+  align-content: center;
+  justify-content: center;
+}
+
+.home-page .tab-bar .bar-icon{
+  height: 120px;
+}
+
+.home-page .myskin-contain {
   flex-direction: column;
   align-items: center;
 }
 
-.home-page .top-block {
+.home-page .myskin-contain .top-block {
   height: 130px;
   justify-content: space-between;
   width: 100%;
 }
 
-.home-page .top-block .nickname {
+.home-page .myskin-contain .top-block .nickname {
   font-size: 50px;
 }
 
-.home-page .top-block .top-btn {
+.home-page .myskin-contain .top-block .top-btn {
   background-color: #ffffff;
   font-size: 50px;
   margin-left: 60px;
@@ -79,13 +140,13 @@ export default {
   width: 200px;
 }
 
-.home-page .cut-line {
+.cut-line {
   width: 100%;
   height: 2px;
   background-color: #f68bcd;
 }
 
-.home-page .skin-block {
+.home-page .myskin-contain .skin-block {
   width: 100%;
   height: 400px;
   display: flex;
@@ -93,7 +154,7 @@ export default {
   align-items: center;
 }
 
-.home-page .skin-block .skin-type {
+.home-page .myskin-contain .skin-block .skin-type {
   width: 200px;
   height: 200px;
   background-color: #f5f5dc;
@@ -103,11 +164,11 @@ export default {
   justify-content: center;
 }
 
-.home-page .skin-block .skin-type .skin-words {
+.home-page .myskin-contain .skin-block .skin-type .skin-words {
   font-size: 55px;
 }
 
-.home-page .report-block {
+.home-page .myskin-contain .report-block {
   width: 100%;
   height: 600px;
   display: flex;
@@ -116,19 +177,19 @@ export default {
   align-items: center;
 }
 
-.home-page .report-block .report-title {
+.home-page .myskin-contain .report-block .report-title {
   font-size: 60px;
   margin-bottom: 50px;
   font-weight: bold;
 }
 
-.home-page .report-block .report-content {
+.home-page .myskin-contain .report-block .report-content {
   font-size: 50px;
   margin-left: 50px;
   margin-right: 50px;
 }
 
-.home-page .report-block .to-more {
+.home-page .myskin-contain .report-block .to-more {
   margin-top: 80px;
   font-size: 50px;
   background-color: #ffffff;
@@ -144,5 +205,87 @@ export default {
   background-color: #ffffff;
   font-size: 50px;
   color: #f68bcd;
+}
+
+.home-page .search-contain {
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-page .search-contain .search-block {
+  width: 100%;
+  height: 120px;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  align-items: center;
+}
+
+.home-page .search-contain .search-block .search-ipt-block {
+  border: 1px solid #f68bcd;
+  width: 800px;
+  border-radius: 60px;
+  height: 110px;
+  align-items: center;
+}
+
+.home-page .search-contain .search-block .search-ipt-block .search-icon {
+  width: 120px;
+}
+
+.home-page .search-contain .search-block .search-ipt-block .search-input {
+  width: 60%;
+  border-radius: 60px;
+}
+
+.home-page .search-contain .search-block .search-btn {
+  width: 150px;
+  height: 90px;
+  background-color: #f68bcd;
+  border-radius: 60px;
+  margin-left: 20px;
+  font-size: 45px;
+  color: #ffffff;
+}
+
+.home-page .search-contain .product-block {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-page .search-contain .product-block .product-card {
+  margin-top: 40px;
+  height: 300px;
+  justify-content: center;
+}
+
+.home-page .search-contain .product-block .product-image {
+  width: 250px;
+  height: 250px;
+  margin-left: 40px;
+}
+
+.home-page .search-contain .product-block .product-title {
+  font-size: 55px;
+  margin-top: 10px;
+}
+
+.home-page .search-contain .product-block .product-detail {
+  margin-top: 20px;
+}
+
+.home-page .search-contain .product-block .product-des {
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 40px;
+  margin-left: 30px;
+}
+
+.home-page .search-contain .product-block .cut-line {
+  width: 100%;
+  height: 1px;
+  background-color: #cfcfcf;
 }
 </style>
