@@ -2,7 +2,7 @@
   <!-- template里只能有一个根节点 -->
   <div class="home-page">
     <tabs>
-      <tab-content>
+      <tab-content scrollable="true">
         <!-- 我的肤质 -->
         <div class="myskin-contain">
           <div class="top-block">
@@ -50,6 +50,10 @@
             </div>
             <div class="cut-line" />
           </div>
+        </div>
+        <!--我的-->
+        <div>
+          <text>暂未完成</text>
         </div>
       </tab-content>
       <tab-bar mode="fixed" class="tab-bar">
