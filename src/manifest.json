@@ -46,6 +46,9 @@
       },
       "Search-pdt": {
         "component": "search-pdt"
+      },
+      "Pdt-detail": {
+        "component": "pdt-detail"
       }
     },
     "widgets": {
@@ -97,6 +100,10 @@
       },
       "Search-pdt": {
         "titleBarText": "搜索",
+        "menu": false
+      },
+      "Pdt-detail": {
+        "titleBarText": "详情",
         "menu": false
       }
     }

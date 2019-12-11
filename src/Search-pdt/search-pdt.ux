@@ -10,7 +10,7 @@
         </div>
         <div class="cut-line" />
         <div class="product-block" for="{{productList}}">
-            <div class="product-card">
+            <div class="product-card" onclick="routeDetail">
                 <image src="../Common/logo.jpg" class="product-image"></image>
                 <div class="product-des">
                     <text class="product-title">{{$item.title}}</text>
@@ -25,6 +25,7 @@
 <script>
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
+import router from '@system.router'
 export default {
     private: {
         text: '欢迎使用Sofu',
@@ -44,7 +45,12 @@ export default {
                 detail: '这是一条非常短的评论，我竟无言以对。'
             },
         ]
-    }
+    },
+    routeDetail() {
+    router.push({
+      uri: '/Pdt-detail'
+    })
+  }
 }
 </script>
 

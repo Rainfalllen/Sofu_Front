@@ -1,0 +1,115 @@
+<template>
+    <!-- template里只能有一个根节点 -->
+    <div class="pdt-detail-page">
+        <!-- 图片及标题区域 -->
+        <div class="top-block">
+            <div class="left">
+                <image src="../Common/logo.jpg" class="product-img"></image>
+            </div>
+            <div class="right">
+                <text class="title">{{product.title}}</text>
+                <div for="{{product.score}}">
+                    <image src="../Common/star-yellow.svg" class="star-icon"></image>
+                </div>
+            </div>
+        </div>
+        <tabs>
+            <!-- 成分及匹配展示区域 -->
+            <tab-bar mode="fixed">
+                <text>成分</text>
+                <text>匹配</text>
+            </tab-bar>
+            <tab-content>
+                <div>
+                    <div class="component-list" for="{{product.component}}">
+                        <text class="component">{{$item}}</text>
+                    </div>
+                </div>
+                <div>
+                    <text>{{matchScore}}</text>
+                </div>
+            </tab-content>
+        </tabs>
+        <!-- 评价区域 -->
+        <div>
+            <div for="{{product.review}}" class="product-review">
+                <div class="review-card">
+                    <div class="review-left">
+                        <image src="{{$item.user.avatar}}" class="avatar"></image>
+                    </div>
+                    <div class="review-right">
+                        <text class="nickname">{{$item.user.nickname}}</text>
+                        <div class="review-score" for="{{$item.score}}">
+                            <image src="../Common/star-yellow.svg" class="review-star"></image>
+                        </div>
+                        <div class="review-content">
+                            <text>{{$item.content}}</text>
+                        </div>
+                    </div>
+                </div>
+                <div class="cut-line" />
+            </div>
+        </div>
+        <text>{{text}}</text>
+        <text>{{des}}</text>
+    </div>
+</template>
+
+<script>
+/* eslint-disable linebreak-style */
+/* eslint-disable indent */
+export default {
+    private: {
+        text: '欢迎使用Sofu',
+        des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
+        product: {
+            title: '无印良品敏感肌用保湿乳',
+            score: 3.65,
+            component: [
+                '水', '双丙甘醇', '辛基十二醇肉豆蔻酸酯', '1,2-戊二醇', '环聚二甲基硅氧烷', '蜂蜡'
+            ]
+        },
+        matchScore: 87,
+
+    }
+}
+</script>
+
+<style>
+.pdt-detail-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cut-line {
+  width: 100%;
+  height: 1px;
+  background-color: #cfcfcf;
+}
+
+.pdt-detail-page .top-block {
+  margin-top: 50px;
+  align-items: flex-start;
+}
+
+.pdt-detail-page .top-block .left {
+  width: 35%;
+}
+
+.pdt-detail-page .top-block .left .product-img {
+  margin-left: 60px;
+  height: 300px;
+  width: 300px;
+}
+
+.pdt-detail-page .top-block .right {
+  width: 65%;
+}
+
+.pdt-detail-page .top-block .right .title{
+    margin-left: 50px;
+    margin-top: 50px;
+    font-size: 50px;
+}
+</style>
