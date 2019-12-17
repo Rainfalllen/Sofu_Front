@@ -41,7 +41,7 @@
           </div>
           <div class="cut-line" />
           <div class="product-block" for="{{productList}}">
-            <div class="product-card">
+            <div class="product-card" onclick="routeMyInfo">
               <image src="../Common/logo.jpg" class="product-image"></image>
               <div class="product-des">
                 <text class="product-title">{{$item.title}}</text>
@@ -100,6 +100,11 @@ export default {
   routeSearch() {
     router.push({
       uri: '/Search-pdt'
+    })
+  },
+  routeMyInfo(){
+    router.push({
+      uri: '/My-skin'
     })
   }
 }

@@ -1,0 +1,37 @@
+<template>
+    <!-- template里只能有一个根节点 -->
+    <div class="my-page">
+        <div class="top-block">
+            <image class="avarl"></image>
+            <text class="nickname"></text>
+        </div>
+        <div class="menu-block">
+            <div class="menu-list">
+                <text class="meau-item">我的收藏</text>
+                <text class="meau-item">我的评价</text>
+                <text class="meau-item">浏览历史</text>
+            </div>
+        </div>
+        <text>{{text}}</text>
+        <text>{{des}}</text>
+    </div>
+</template>
+
+<script>
+/* eslint-disable indent */
+/* eslint-disable linebreak-style */
+export default {
+    private: {
+        text: '欢迎使用Sofu',
+        des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
+    }
+}
+</script>
+
+<style>
+.demo-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+</style>
