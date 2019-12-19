@@ -2,18 +2,25 @@
     <!-- template里只能有一个根节点 -->
     <div class="my-page">
         <div class="top-block">
-            <image class="avarl"></image>
-            <text class="nickname"></text>
+            <image class="avarl" src="../Common/logo.jpg"></image>
+            <text class="nickname">Luxu</text>
         </div>
         <div class="menu-block">
             <div class="menu-list">
-                <text class="meau-item">我的收藏</text>
-                <text class="meau-item">我的评价</text>
-                <text class="meau-item">浏览历史</text>
+                <div class="meau-item">
+                    <image src="../Common/collection.svg" class="icon"></image>
+                    <text class="meau-text">我的收藏</text>
+                </div>
+                <div class="meau-item">
+                    <image src="../Common/browse.svg" class="icon"></image>
+                    <text class="meau-text">我的浏览</text>
+                </div>
+                <div class="meau-item">
+                    <image src="../Common/review.svg" class="icon"></image>
+                    <text class="meau-text">我的评论</text>
+                </div>
             </div>
         </div>
-        <text>{{text}}</text>
-        <text>{{des}}</text>
     </div>
 </template>
 
@@ -29,9 +36,55 @@ export default {
 </script>
 
 <style>
-.demo-page {
+.my-page {
   flex: 1;
   flex-direction: column;
   align-items: center;
+}
+
+.my-page .top-block {
+  height: 500px;
+  width: 100%;
+  background-color: #f68bcd;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-page .top-block .avarl {
+  height: 200px;
+  width: 200px;
+  border: 1px solid #000000;
+  border-radius: 100px;
+}
+
+.my-page .top-block .nickname {
+  margin-top: 50px;
+  font-size: 55px;
+}
+
+.my-page .menu-block {
+}
+
+.my-page .menu-block .menu-list {
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 200px;
+  border-top: 1px #7e7e7e;
+}
+
+.my-page .menu-block .menu-list .meau-item {
+  height: 150px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px #7e7e7e;
+}
+
+.my-page .menu-block .menu-list .meau-item .icon {
+  height: 80px;
+  width: 80px;
+  margin-right: 60px;
 }
 </style>
