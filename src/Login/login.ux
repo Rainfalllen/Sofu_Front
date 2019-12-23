@@ -19,6 +19,7 @@
 <script>
 /* eslint-disable linebreak-style */
 import router from '@system.router'
+import fetch from '@system.fetch'
 export default {
   private: {
     text: '登录',
