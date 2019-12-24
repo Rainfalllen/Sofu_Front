@@ -6,6 +6,8 @@ import util from './util'
 
 export default {
   showMenu: util.showMenu,
-  createShortcut: util.createShortcut
+  createShortcut: util.createShortcut,
+    /*远程域名及本地域名*/
+  urlPrefix:  'http://127.0.0.1:8000/'
 }
 </script>
