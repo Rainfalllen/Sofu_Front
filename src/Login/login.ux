@@ -11,13 +11,12 @@
       </div>
     </div>
     <div class="to-next">
-      <input type="button" value="登录" class="to-next-btn" onclick="login"></input>
+      <input type="button" value="登录" class="to-next-btn" onclick="loginIn"></input>
     </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable linebreak-style */
 import router from '@system.router'
 import fetch from '@system.fetch'
 import storage from '@system.storage'
@@ -25,76 +24,43 @@ import prompt from '@system.prompt'
 export default {
   private: {
     text: '登录',
-  },
-  loginIn() {
 
   },
+  phoneNum: String,
   savePhoneNum(e) {
-    storage.set({
-      key: 'phoneNum',
-      value: e.value,
-      success: function (data) {
-        console.log(e.value)
-      },
-      fail: function (data, code) {
-        console.log(`handling fail, code = ${code}`)
-      }
-    })
+    console.log(e.value)
+    this.phoneNum = e.value
   },
   savePasswd(e) {
-    storage.set({
-      key: 'passWd',
-      value: e.value,
-      success: function (data) {
-        console.log(e.value)
-      },
-      fail: function (data, code) {
-        console.log(`handling fail, code = ${code}`)
-      }
-    })
+    console.log(e.value)
+    this.passWd = e.value
   },
   //发送请求
-  login() {
-    var phoneNum, passWd;
+  loginIn() {
     var url = this.$app.$def.urlPrefix + 'sofu/api/loginin/loginin_action/'
-    storage.get({
-      key: 'phoneNum',
-      success: function (data) {
-        console.log("1   " + data)
-        phoneNum = data
-        storage.get({
-          key: 'passWd',
-          success: function (data) {
-            console.log("2   " + data)
-            passWd = data
-            //发送网络请求
-            
-            fetch.fetch({
-              url: url,
-              method: 'post',
-              responseType: 'Json',
-              data: {
-                telephone: phoneNum,
-                user_secret: passWd
-              },
-              success: function (response) {
-                console.log(`the status code of the response: ${response.code}`)
-                console.log(`the data of the response: ${response.data}`)
-                console.log(
-                  `the headers of the response: ${JSON.stringify(response.headers)}`
-                )
-              },
-              fail: function (data, code) {
-                console.log(`handling fail, errMsg = ${data}`)
-                console.log(`handling fail, errCode = ${code}`)
-              }
-            })
-          }
-        })
+    console.log(this.phoneNum)
+    fetch.fetch({
+      url: url,
+      method: 'post',
+      responseType: 'Json',
+      data: {
+        telephone: this.phoneNum,
+        user_secret: this.passWd
+      },
+      success: function (response) {
+        var result = (response.data).substring(1, ((response.data).length - 1));
+        console.log(result)
+        if (result == "登录成功") {
+          router.push({
+            uri: '/Home'
+          })
+        }
+        prompt.showToast({ message: result })
+      },
+      fail: function (data, code) {
 
       }
     })
-    console.log(this.$app.$def.urlPrefix)
 
   }
 }

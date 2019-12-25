@@ -1,53 +1,130 @@
 <template>
-    <!-- template里只能有一个根节点 -->
-    <div class="register-page">
-        <div>
-            <text class="title">{{text}}</text>
-        </div>
-        <div class="input">
-            <input type="text" placeholder="请输入昵称" class="nickname-input"></input>
-            <div class="select-sex">
-            <div for="{{sexCheck}}" class="sex-block">
-                <input type="radio" class="sex-radio"></input>
-                <label class="sex-text">{{$item}}</label>
-            </div>
-            </div>
-            <div class="birthday-block">
-                <text style="font-size:60px;">生日：</text>
-                <picker type="date" value="{{date}}" class="birthday-datecheck"  onchange="getDate"></picker>
-            </div>
-        </div>
-        <div class="finish">
-            <input type="button" value="开启你的Sofu之旅吧~" class="finish-btn" onclick="routeHome" ></input>
-        </div>
+  <!-- template里只能有一个根节点 -->
+  <div class="register-page">
+    <div>
+      <text class="title">{{text}}</text>
     </div>
+    <div class="input">
+      <input type="text" placeholder="请输入昵称" class="nickname-input" onchange="saveNickName"></input>
+      <div class="select-sex">
+        <div for="{{sexCheck}}" class="sex-block">
+          <input type="radio" class="sex-radio" onchange="saveSex" value="{{$item.id}}"></input>
+          <label class="sex-text">{{$item.content}}</label>
+        </div>
+      </div>
+      <div class="birthday-block">
+        <text style="font-size:60px;">生日：</text>
+        <picker type="date" value="{{birthday}}" class="birthday-datecheck" onchange="saveDate"></picker>
+      </div>
+    </div>
+    <div class="finish">
+      <input type="button" value="开启你的Sofu之旅吧~" class="finish-btn" onclick="routeHome"></input>
+    </div>
+  </div>
 </template>
 
 <script>
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
-    import router from '@system.router'
+import router from '@system.router'
+import prompt from '@system.prompt'
+import fetch from '@system.fetch'
+import storage from '@system.storage'
 export default {
-    private: {
-        text: '完善个人信息',
-        // eslint-disable-next-line quotes
-        sexCheck: ["男", "女"],
-        date: ''
-    },
-    onInit () {
-      const date = new Date()
-      const Y = date.getFullYear()
-      const M = date.getMonth() + 1
-      const D = date.getDate()
-      this.date = Y + '-' + M + '-' + D
-    },
-    getDate (e) {
-      this.date = e.year + '-' + (e.month + 1) + '-' + e.day
-    },
-    routeHome () {
-    router.push ({
-      uri: '/Home'
+  private: {
+    text: '完善个人信息',
+    // eslint-disable-next-line quotes
+    sexCheck: [
+      { id: "0", content: "男" },
+      { id: "1", content: "女" }
+    ],
+    birthday: ''
+  },
+  onInit(e) {
+    const date = new Date()
+    const Y = date.getFullYear()
+    const M = date.getMonth() + 1
+    const D = date.getDate()
+    this.birthday = Y + '-' + M + '-' + D
+    this.phoneNum = e.phoneNum
+    this.passWd = e.passWd
+    storage.set({
+      key: 'phoneNum',
+      value: e.phoneNum,
     })
+    storage.set({
+      key: 'passWd',
+      value: e.passWd,
+    })
+  },
+  saveNickName(e) {
+    this.nickName = e.value
+    console.log(this.nickName)
+  },
+  saveSex(e) {
+    //由于直接存储页面中在选择日期时会丢失据，所以换为storage
+    storage.set({
+      key: 'sexId',
+      value: e.value,
+    })
+    this.sexId=e.value
+    console.log(e.value)
+  },
+  saveDate(e) {
+    console.log(this.sexId)
+    this.birthday = e.year + '-' + (e.month + 1) + '-' + e.day
+    console.log(this.birthday)
+  },
+  // 进行注册并进行跳转
+  routeHome() {
+    var that=this
+    var url = this.$app.$def.urlPrefix + 'sofu/api/register/regisit_action/'
+    console.log(url)
+    storage.get({
+      key: 'phoneNum',
+      success:function(data){
+        that.phoneNum=data
+      }
+    })
+    storage.get({
+      key: 'passWd',
+      success:function(data){
+        that.passWd=data
+      }
+    })
+    storage.get({
+      key: 'sexId',
+      success: function (sexId) {
+        console.log(sexId)
+        console.log(that.nickName + "   " + that.birthday + "   " + sexId+ "   " + that.phoneNum+ "   " + that.passWd)
+        if (that.nickName == (undefined || null) || that.birthday == (undefined || null) || sexId == (undefined || null)) {
+          prompt.showToast({
+            message: "请输入全部信息"
+          })
+        } else {
+          fetch.fetch({
+            url: url,
+            method: 'post',
+            responseType: 'Json',
+            data: {
+              telephone: that.phoneNum,
+              user_secret: that.passWd,
+              name: that.nickName,
+              sex: sexId,
+              birthday: that.birthday
+            },
+            success(response) {
+              console.log(response.data)
+              router.push({
+                uri: '/Home'
+              })
+            }
+          })
+        }
+      }
+    })
+   
+
   }
 }
 </script>
@@ -82,31 +159,27 @@ export default {
 }
 
 .register-page .input .select-sex {
-    flex-direction: row;
-    margin-top: 80px;
-}
-
-.register-page .input .select-sex .sex-block{
-  margin-left:10px;
-  margin-right: 10px; 
-}
-
-.register-page .input .select-sex .sex-radio{
-  margin-left:20px;
-  margin-right: 20px; 
-  width: 50px;
-  height: 50px;
-}
-
-.register-page .input .select-sex .sex-block .sex-text{
-  font-size: 60px;
-}
-
-.register-page .input .birthday-block{
+  flex-direction: row;
   margin-top: 80px;
 }
 
-.register-page .input .birthday-block .birthday-datecheck{  
+.register-page .input .select-sex .sex-block {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.register-page .input .select-sex .sex-radio {
+}
+
+.register-page .input .select-sex .sex-block .sex-text {
+  font-size: 60px;
+}
+
+.register-page .input .birthday-block {
+  margin-top: 80px;
+}
+
+.register-page .input .birthday-block .birthday-datecheck {
   font-size: 60px;
 }
 

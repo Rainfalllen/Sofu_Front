@@ -1,30 +1,51 @@
 <template>
-    <!-- template里只能有一个根节点 -->
-    <div class="register-page">
-        <div>
-            <text class="title">{{text}}</text>
-        </div>
-        <div class="input">
-            <input type="text" placeholder="请输入密码" class="pwd-first"></input>
-            <input type="text" placeholder="请再次输入密码" class="pwd-second"></input>
-        </div>
-        <div class="to-next">
-            <input type="button" value="下一步" class="to-next-btn" onclick="routeAddInfo"></input>
-        </div>
+  <!-- template里只能有一个根节点 -->
+  <div class="register-page">
+    <div>
+      <text class="title">{{text}}</text>
     </div>
+    <div class="input">
+      <input type="password" placeholder="请输入密码" class="pwd-first" onchange="savePassWd"></input>
+      <input type="password" placeholder="请再次输入密码" class="pwd-second" onchange="savePassWdRepeat"></input>
+    </div>
+    <div class="to-next">
+      <input type="button" value="下一步" class="to-next-btn" onclick="routeAddInfo"></input>
+    </div>
+  </div>
 </template>
 
 <script>
 /* eslint-disable linebreak-style */
 import router from '@system.router'
+import prompt from '@system.prompt'
 export default {
   private: {
     text: '输入密码',
   },
-  routeAddInfo () {
-    router.push ({
-      uri: '/Add-info'
-    })
+  onInit(e) {
+    console.log(e)
+    this.phoneNum = e.phoneNum
+  },
+  routeAddInfo() {
+    if (this.passWd == this.rePassWd) {
+      router.push({
+        uri: '/Add-info',
+        params:{
+          phoneNum:this.phoneNum,
+          passWd:this.passWd
+        }
+      })
+    }else{
+      prompt.showToast({
+        message:"两次密码不一致"
+      })
+    }
+  },
+  savePassWd(e) {
+    this.passWd = e.value
+  },
+  savePassWdRepeat(e) {
+    this.rePassWd = e.value
   }
 }
 </script>
