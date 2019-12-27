@@ -67,7 +67,7 @@ export default {
       key: 'sexId',
       value: e.value,
     })
-    this.sexId=e.value
+    this.sexId = e.value
     console.log(e.value)
   },
   saveDate(e) {
@@ -77,26 +77,26 @@ export default {
   },
   // 进行注册并进行跳转
   routeHome() {
-    var that=this
+    var that = this
     var url = this.$app.$def.urlPrefix + 'sofu/api/register/regisit_action/'
     console.log(url)
     storage.get({
       key: 'phoneNum',
-      success:function(data){
-        that.phoneNum=data
+      success: function (data) {
+        that.phoneNum = data
       }
     })
     storage.get({
       key: 'passWd',
-      success:function(data){
-        that.passWd=data
+      success: function (data) {
+        that.passWd = data
       }
     })
     storage.get({
       key: 'sexId',
       success: function (sexId) {
         console.log(sexId)
-        console.log(that.nickName + "   " + that.birthday + "   " + sexId+ "   " + that.phoneNum+ "   " + that.passWd)
+        console.log(that.nickName + "   " + that.birthday + "   " + sexId + "   " + that.phoneNum + "   " + that.passWd)
         if (that.nickName == (undefined || null) || that.birthday == (undefined || null) || sexId == (undefined || null)) {
           prompt.showToast({
             message: "请输入全部信息"
@@ -105,7 +105,7 @@ export default {
           fetch.fetch({
             url: url,
             method: 'post',
-            responseType: 'Json',
+            responseType: 'text',
             data: {
               telephone: that.phoneNum,
               user_secret: that.passWd,
@@ -115,15 +115,39 @@ export default {
             },
             success(response) {
               console.log(response.data)
-              router.push({
-                uri: '/Home'
+              var jsonResponse = JSON.parse(response.data)
+              //先把所有storage删除
+              storage.clear({
+                success: function (data) {
+                  console.log('handling success')
+                  //再将电话加入storage
+                  storage.set({
+                    key: 'userPhone',
+                    value: that.phoneNum,
+                  })
+                  storage.set({
+                    key: 'userId',
+                    value: jsonResponse,
+                    success: function (data) {
+                      router.push({
+                        uri: '/Home'
+                      })
+                    }
+                  })
+                  prompt.showToast({
+                    message: '注册成功'
+                  })
+                },
+                fail: function (data, code) {
+                  console.log(`handling fail, code = ${code}`)
+                }
               })
             }
           })
         }
       }
     })
-   
+
 
   }
 }

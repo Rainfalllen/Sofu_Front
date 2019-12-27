@@ -3,11 +3,34 @@
 * 应用级别的配置，供所有页面公用
 */
 import util from './util'
-
+import storage from '@system.storage'
+import router from '@system.router'
+import prompt from '@system.prompt'
 export default {
   showMenu: util.showMenu,
   createShortcut: util.createShortcut,
-    /*远程域名及本地域名*/
-  urlPrefix:  'http://127.0.0.1:8000/'
+  /*远程域名及本地域名*/
+  //本地（电脑）
+  urlPrefix: 'http://192.168.137.1:8000/',
+  //本地（手机）
+  // urlPrefix: 'http://192.168.43.12:8000/'
+  //检查登录状态
+  onCreate() {
+    storage.get({
+      key: 'userPhone',
+      success: function (data) {
+        console.log(data.length)
+        if (data.length!=0) {
+          router.replace({
+            uri: '/Home'
+          })
+          prompt.showToast({
+            message:"自动登录成功"
+          })
+        }
+      }
+    })
+
+  },
 }
 </script>
