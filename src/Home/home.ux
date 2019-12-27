@@ -25,7 +25,7 @@
             <text class="report-title">肤质报告&指南</text>
             <text class="report-content">{{report.content}}</text>
             <div style="justify-content:flex-end;width:100%;">
-              <input type="button" class="to-more" value=">>查看更多" onclick="routeSearch"></input>
+              <text class="to-more" value=">>查看更多" onclick="routeSearch"></text>
             </div>
           </div>
           <div class="cut-line" />
@@ -44,8 +44,8 @@
             <div class="product-card" onclick="routePdtDetail">
               <image src="../Common/logo.jpg" class="product-image"></image>
               <div class="product-des">
-                <text class="product-title">{{$item.title}}</text>
-                <text class="product-detail">{{$item.detail}}</text>
+                <text class="product-title">{{$item.name}}</text>
+                <text class="product-detail">{{$item.average_score}}</text>
               </div>
             </div>
             <div class="cut-line" />
@@ -97,24 +97,24 @@ import storage from '@system.storage'
 export default {
   // eslint-disable-next-line linebreak-style
   private: {
-    userInfo:{},
+    userInfo: {},
     skinType: [],
     report: {
       content: '有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节。当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度。'
     },
     productList: [
       {
-        title: '这是一个非常长的标题',
-        detail: '这是一条非常短的评论，我竟无言以对。'
+        name: '这是一个非常长的标题',
+        average_score: '这是一条非常短的评论，我竟无言以对。'
       }, {
-        title: '这是一个非常长的标题',
-        detail: '这是一条非常短的评论，我竟无言以对。'
+        name: '这是一个非常长的标题',
+        average_score: '这是一条非常短的评论，我竟无言以对。'
       }, {
-        title: '这是一个非常长的标题',
-        detail: '这是一条非常短的评论，我竟无言以对。'
+        name: '这是一个非常长的标题',
+        average_score: '这是一条非常短的评论，我竟无言以对。'
       }, {
-        title: '这是一个非常长的标题',
-        detail: '这是一条非常短的评论，我竟无言以对。'
+        name: '这是一个非常长的标题',
+        average_score: '这是一条非常短的评论，我竟无言以对。'
       },
     ]
   },
@@ -137,6 +137,7 @@ export default {
           success: function (response) {
             console.log(response.data)
             var jsonResponse = JSON.parse(response.data)
+            that.skinType = []
             that.getSkinTypeStr(jsonResponse.oil, jsonResponse.sensitive)
             console.log(that.skinType)
           }
@@ -153,10 +154,27 @@ export default {
           success: function (response) {
             console.log(response.data)
             var jsonResponse = JSON.parse(response.data)
-            that.userInfo=jsonResponse
+            that.userInfo = jsonResponse
             console.log(that.userInfo)
           }
         })
+      }
+    })
+    //初始化产品列表
+    var itemUrl = that.$app.$def.urlPrefix + 'sofu/api/item/some_item/'
+    fetch.fetch({
+      url: itemUrl,
+      method: 'GET',
+      data: {
+        user_id: that.userId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        that.productList = []
+        for (let i = 0; i < jsonResponse.length; i++) {
+          that.productList.push(jsonResponse[i])
+        }
       }
     })
 
@@ -203,7 +221,7 @@ export default {
     console.log(this.serachPdt)
   },
   searchPdt() {
-    console.log(this.serachPdt)
+    var that = this
     var url = this.$app.$def.urlPrefix + 'sofu/api/search/searchItem/'
     fetch.fetch({
       url: url,
@@ -213,6 +231,11 @@ export default {
       },
       success: function (response) {
         console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        that.productList = []
+        for (let i = 0; i < jsonResponse.length; i++) {
+          that.productList.push(jsonResponse[i])
+        }
       }
     })
   },
@@ -261,16 +284,16 @@ export default {
 }
 
 .home-page .myskin-contain .top-block .nickname {
-  font-size: 50px;
+  font-size: 55px;
 }
 
 .home-page .myskin-contain .top-block .top-btn {
   background-color: #ffffff;
-  font-size: 50px;
+  font-size: 55px;
   margin-left: 60px;
   margin-right: 60px;
   color: #f68bcd;
-  width: 200px;
+  width: 250px;
 }
 
 .cut-line {
@@ -290,7 +313,7 @@ export default {
 .home-page .myskin-contain .skin-block .skin-type {
   width: 200px;
   height: 200px;
-  background-color: #ffd816;
+  background-color: #f0fa99;
   border-radius: 100px;
   margin-left: 100px;
   margin-right: 100px;
@@ -406,6 +429,7 @@ export default {
 
 .home-page .search-contain .product-block .product-detail {
   margin-top: 20px;
+  font-size: 50px;
 }
 
 .home-page .search-contain .product-block .product-des {
@@ -474,7 +498,7 @@ export default {
   margin-right: 60px;
 }
 
-.home-page .myInfo-contain .menu-block .menu-list .meau-item .meau-text{
-  font-size: 60px;
+.home-page .myInfo-contain .menu-block .menu-list .meau-item .meau-text {
+  font-size: 50px;
 }
 </style>

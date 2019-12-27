@@ -1,0 +1,130 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="login-page">
+    <div>
+      <text class="title">{{text}}</text>
+    </div>
+    <div class="input">
+      <input type="text" placeholder="请输入手机号" class="phone-number" onchange="savePhoneNum"></input>
+      <div class="ver-code">
+        <input type="password" placeholder="请输入密码" class="ver-code-input" onchange="savePasswd"></input>
+      </div>
+    </div>
+    <div class="to-next">
+      <input type="button" value="登录" class="to-next-btn" onclick="loginIn"></input>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import prompt from '@system.prompt'
+import storage from '@system.storage'
+export default {
+  private: {
+    text: '登录',
+  },
+  phoneNum: String,
+  savePhoneNum(e) {
+    console.log(e.value)
+    this.phoneNum = e.value
+  },
+  savePasswd(e) {
+    console.log(e.value)
+    this.passWd = e.value
+  },
+  //发送请求
+  loginIn() {
+    var that = this
+    var url = this.$app.$def.urlPrefix + 'sofu/api/loginin/loginin_action/'
+    console.log(this.phoneNum)
+    console.log(url)
+    fetch.fetch({
+      url: url,
+      method: 'POST',
+      responseType: 'text',
+      data: {
+        telephone: that.phoneNum,
+        user_secret: that.passWd
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        storage.set({
+          key: 'userPhone',
+          value: that.phoneNum,
+        })
+        storage.set({
+          key: 'userId',
+          value: jsonResponse.user_id,
+          success: function (data) {
+            console.log(data + "55555")
+            router.replace({
+              uri: '/Home'
+            })
+          }
+        })
+      }
+    })
+
+  },
+
+}
+</script>
+
+<style>
+.login-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-page .title {
+  margin-top: 200px;
+  font-size: 120px;
+  color: #f68bcd;
+}
+
+.login-page .input {
+  display: flex;
+  flex-direction: column;
+  margin-top: 200px;
+}
+
+.login-page .input .phone-number {
+  width: 750px;
+  height: 120px;
+  border: 1px solid #b4b4b4;
+  border-radius: 60px;
+  font-size: 50px;
+  padding-left: 30px;
+}
+
+.login-page .input .ver-code {
+  margin-top: 50px;
+  width: 750px;
+  height: 120px;
+}
+
+.login-page .input .ver-code .ver-code-input {
+  width: 750px;
+  font-size: 50px;
+  padding-left: 30px;
+  border: 1px solid #b4b4b4;
+  border-radius: 60px;
+}
+
+.login-page .to-next {
+  margin-top: 200px;
+}
+
+.login-page .to-next .to-next-btn {
+  width: 400px;
+  height: 150px;
+  font-size: 50px;
+  background-color: #f68bcd;
+  border-radius: 20px;
+  color: #ffffff;
+}
+</style>

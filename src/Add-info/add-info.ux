@@ -130,7 +130,7 @@ export default {
                     value: jsonResponse,
                     success: function (data) {
                       router.push({
-                        uri: '/Home'
+                        uri: '/Skin-test'
                       })
                     }
                   })

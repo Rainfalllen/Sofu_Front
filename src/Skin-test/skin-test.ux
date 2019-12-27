@@ -1,29 +1,29 @@
 <template>
-    <!-- template里只能有一个根节点 -->
-    <div class="skin-test-page">
-        <!-- 头部栏 -->
-        <div class="top-block">
-            <image src="../Common/left-arrow.svg" class="top-icon" onclick="toLastQuestion"></image>
-            <text class="title">{{title}}</text>
-            <image src="../Common/right-arrow.svg" class="top-icon" onclick="toNextQuestion(answerList[quesConunt])"></image>
-        </div>
-        <div class="cut-line" />
-        <!-- 进度条 -->
-        <div class="progress-block">
-            <progress type="horizontal" percent="{{progress}}" class="progress" />
-        </div>
-        <!-- 问题及选项 -->
-        <div class="question-block">
-            <text class="question-title">{{question[quesConunt]}}</text>
-            <div for="{{answer[quesConunt]}}" class="question-option">
-                <!-- <image src="../Common/正常选项 (1).svg" class="option-icon" /> -->
-                <!-- 如果没被选上，则显示黑色字体 -->
-                <text class="option-label" onclick="toNextQuestion($idx+1)" show="{{!isCheck[quesConunt][$idx]}}">{{$item}}</text>
-                <!-- 如果被选上，则显示粉色字体 -->
-                <text class="option-label-check" onclick="toNextQuestion($idx+1)" show="{{isCheck[quesConunt][$idx]}}">{{$item}}</text>
-            </div>
-        </div>
+  <!-- template里只能有一个根节点 -->
+  <div class="skin-test-page">
+    <!-- 头部栏 -->
+    <div class="top-block">
+      <image src="../Common/left-arrow.svg" class="top-icon" onclick="toLastQuestion"></image>
+      <text class="title">{{title}}</text>
+      <image src="../Common/right-arrow.svg" class="top-icon" onclick="toNextQuestion(answerList[quesConunt])"></image>
     </div>
+    <div class="cut-line" />
+    <!-- 进度条 -->
+    <div class="progress-block">
+      <progress type="horizontal" percent="{{progress}}" class="progress" />
+    </div>
+    <!-- 问题及选项 -->
+    <div class="question-block">
+      <text class="question-title">{{question[quesConunt]}}</text>
+      <div for="{{answer[quesConunt]}}" class="question-option">
+        <!-- <image src="../Common/正常选项 (1).svg" class="option-icon" /> -->
+        <!-- 如果没被选上，则显示黑色字体 -->
+        <text class="option-label" onclick="toNextQuestion($idx+1)" show="{{!isCheck[quesConunt][$idx]}}">{{$item}}</text>
+        <!-- 如果被选上，则显示粉色字体 -->
+        <text class="option-label-check" onclick="toNextQuestion($idx+1)" show="{{isCheck[quesConunt][$idx]}}">{{$item}}</text>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -33,131 +33,137 @@ import fetch from '@system.fetch'
 import storage from '@system.storage'
 import router from '@system.router'
 export default {
-    private: {
-        title: '肤质测试',
-        question: [],
-        answer: [],
-        quesConunt: 0,
-        answerList: [],
-        //对应每个问题每个选项是否有被选择
-        isCheck: [[Boolean]],
-        progress: 0,
-        typeNum: []
-    },
-    onShow() {
-        //获取问题列表
-        var that = this
-        var url = this.$app.$def.urlPrefix + 'sofu/api/test_question/all_questions/'
-        console.log(url)
-        storage.get({
-            key: 'userId',
-            success: function (data) {
-                that.userId = data
-                console.log(that.userId)
-            }
-        })
-        fetch.fetch({
-            url: url,
-            method: 'GET',
-            responseType: 'text',
-            success: function (response) {
-                console.log(response)
-                var jsonResponse = JSON.parse(response.data)
-                that.question = jsonResponse.question_list
-                that.answer = jsonResponse.answer_list
-                that.questionType = jsonResponse.question_type_list
-                //初始化isCheck第一个问题都为false
-                for (var j = 0; j < that.answer[0].length; j++) {
-                    that.isCheck[0][j] = false
-                    console.log(that.isCheck[0][j])
-                }
-                //统计两类问题的数量
-                var typequescount = 0
-                var typecount = 0
-                for (let i = 1; i <= that.questionType.length; i++) {
-                    if (that.questionType[i] == that.questionType[i - 1]) {
-                        typequescount++
-                    } else {
-                        typequescount++
-                        that.typeNum[typecount] = typequescount
-                        typecount++
-                    }
-                }
-                that.typecount = 0
-                console.log(that.typeNum)
-                console.log(that.isCheck)
-                console.log(that.question)
-                console.log(that.answer)
-            }
-        })
-    },
-    toLastQuestion() {
-        this.quesConunt--;
-    },
-    toNextQuestion(e) {
-        console.log(this.quesConunt)
-        console.log("参数" + e)
-        //如果到最后一个
-        if (this.quesConunt + 1 == this.question.length) {
-            this.finishQuestion(this.typecount + 1, this.typeNum[this.typecount])
-            router.replace({
-                uri: '/Home'
-            })
-
-        } else {
-            this.answerList[this.quesConunt] = e
-            //清除本问题的isCheck
-            var isCheckInit = []
-            for (let i = 0; i < this.answer[this.quesConunt].length; i++) {
-                isCheckInit[i] = false
-                console.log(isCheckInit[i])
-            }
-            this.isCheck[this.quesConunt] = isCheckInit.concat()
-            //更改本问题的isCheck
-            this.isCheck[this.quesConunt][e - 1] = true
-            this.quesConunt++
-            //计算此时的progress
-            this.progress = (this.quesConunt / this.question.length) * 100
-            console.log(this.progress)
-            console.log(this.answerList)
-            //如果下一个问题还没有初始化则初始化下一个问题
-            if (this.answerList[this.quesConunt] == null || undefined) {
-                //初始化下一个问题的isCheck
-                for (let i = 0; i < this.answer[this.quesConunt].length; i++) {
-                    isCheckInit[i] = false
-                    console.log(isCheckInit[i])
-                }
-                this.isCheck[this.quesConunt] = isCheckInit.concat()
-                console.log(this.isCheck)
-            }
+  private: {
+    title: '肤质测试',
+    question: [],
+    answer: [],
+    quesConunt: 0,
+    answerList: [],
+    //对应每个问题每个选项是否有被选择
+    isCheck: [[Boolean]],
+    progress: 0,
+    //两类问题的数量
+    typeNum: []
+  },
+  onShow() {
+    //获取问题列表
+    var that = this
+    var url = this.$app.$def.urlPrefix + 'sofu/api/test_question/all_questions/'
+    console.log(url)
+    storage.get({
+      key: 'userId',
+      success: function (data) {
+        that.userId = data
+        console.log(that.userId)
+      }
+    })
+    fetch.fetch({
+      url: url,
+      method: 'GET',
+      responseType: 'text',
+      success: function (response) {
+        console.log(response)
+        var jsonResponse = JSON.parse(response.data)
+        that.question = jsonResponse.question_list
+        that.answer = jsonResponse.answer_list
+        that.questionType = jsonResponse.question_type_list
+        //初始化isCheck第一个问题都为false
+        for (var j = 0; j < that.answer[0].length; j++) {
+          that.isCheck[0][j] = false
+          console.log(that.isCheck[0][j])
         }
-        //如果回答完一类问题，就调用一次finishQuestion
-        if ((this.quesConunt) == this.typeNum[this.typecount]) {
-            this.finishQuestion(this.typecount + 1, this.typeNum[this.typecount])
-            this.typecount++;
+        //统计两类问题的数量
+        var typequescount = 0
+        var typecount = 0
+        for (let i = 1; i <= that.questionType.length; i++) {
+          if (that.questionType[i] == that.questionType[i - 1]) {
+            typequescount++
+          } else {
+            typequescount++
+            that.typeNum[typecount] = typequescount
+            typecount++
+          }
         }
-    },
-    finishQuestion(type, typecount) {
-        console.log(type)
-        console.log(this.answerList)
-        var that = this
-        var answerList = this.answerList.slice((0 - typecount))
-        console.log("456  " + answerList)
-        var url = this.$app.$def.urlPrefix + 'sofu/api/skin_type/post_type/'
-        fetch.fetch({
-            url: url,
-            method: 'POST',
-            responseType: 'text',
-            data: {
-                user_id: that.userId,
-                answer: answerList,
-                type: type
-            },
-            success: function (response) {
-                console.log(response.data)
-            }
-        })
+        that.typecount = 0
+        console.log(that.typeNum)
+        console.log(that.isCheck)
+        console.log(that.question)
+        console.log(that.answer)
+      }
+    })
+  },
+  toLastQuestion() {
+    this.quesConunt--;
+  },
+  toNextQuestion(e) {
+    console.log(this.quesConunt)
+    console.log("参数" + e)
+    //如果到最后一个
+    if (this.quesConunt+1 == this.question.length) {
+      this.answerList[this.quesConunt] = e
+      this.finishQuestion(this.typecount+1, this.typeNum[this.typecount])
+    } 
+    if (this.quesConunt +1!= this.question.length) {
+      this.answerList[this.quesConunt] = e
+      //清除本问题的isCheck
+      var isCheckInit = []
+      for (let i = 0; i < this.answer[this.quesConunt].length; i++) {
+        isCheckInit[i] = false
+        console.log(isCheckInit[i])
+      }
+      this.isCheck[this.quesConunt] = isCheckInit.concat()
+      //更改本问题的isCheck
+      this.isCheck[this.quesConunt][e - 1] = true
+      this.quesConunt++
+      //计算此时的progress
+      this.progress = (this.quesConunt / this.question.length) * 100
+      console.log(this.progress)
+      console.log(this.answerList)
+      //如果没有到最后下一个问题还没有初始化则初始化下一个问题
+      if (this.answerList[this.quesConunt] == null || undefined) {
+        //初始化下一个问题的isCheck
+        for (let i = 0; i < this.answer[this.quesConunt].length; i++) {
+          isCheckInit[i] = false
+          console.log(isCheckInit[i])
+        }
+        this.isCheck[this.quesConunt] = isCheckInit.concat()
+        console.log(this.isCheck)
+      }
     }
+    //如果回答完一类问题，就调用一次finishQuestion
+    if ((this.quesConunt) == this.typeNum[this.typecount]) {
+      this.finishQuestion(this.typecount+1, this.typeNum[this.typecount])
+      this.typecount++
+    }
+  },
+  finishQuestion(type, typecount) {
+    console.log(type)
+    console.log(this.answerList)
+    var that = this
+    //将answeList切分为需要的子数组
+    var answerList = this.answerList.slice((0 - typecount))
+    console.log("456  " + answerList)
+    var url = this.$app.$def.urlPrefix + 'sofu/api/skin_type/post_type/'
+    fetch.fetch({
+      url: url,
+      method: 'POST',
+      responseType: 'text',
+      data: {
+        user_id: that.userId,
+        answer: answerList,
+        type: type
+      },
+      success: function (response) {
+        console.log(response.data)
+
+        if (that.answerList.length == that.question.length) {
+          router.replace({
+            uri: '/Home'
+          })
+        }
+      }
+    })
+  }
 
 }
 </script>
