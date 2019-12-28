@@ -51,6 +51,15 @@
       },
       "Pdt-detail": {
         "component": "pdt-detail"
+      },
+      "My-collection": {
+        "component": "my-collection"
+      },
+      "My-review": {
+        "component": "my-review"
+      },
+      "Browse-record": {
+        "component": "browse-record"
       }
     },
     "widgets": {
@@ -106,6 +115,18 @@
       },
       "Pdt-detail": {
         "titleBarText": "详情",
+        "menu": false
+      },
+      "My-collection": {
+        "titleBarText": "我的收藏",
+        "menu": false
+      },
+      "My-review": {
+        "titleBarText": "我的评价",
+        "menu": false
+      },
+      "Browse-record": {
+        "titleBarText": "浏览记录",
         "menu": false
       }
     }

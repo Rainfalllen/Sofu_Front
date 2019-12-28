@@ -1,77 +1,186 @@
 <template>
-    <!-- template里只能有一个根节点 -->
-    <div class="pdt-detail-page">
-        <!-- 图片及标题区域 -->
-        <div class="top-block">
-            <div class="left">
-                <image src="../Common/logo.jpg" class="product-img"></image>
+  <!-- template里只能有一个根节点 -->
+  <div class="pdt-detail-page">
+    <!-- 图片及标题区域 -->
+    <div class="top-block">
+      <div class="left">
+        <image src="{{product.url}}" class="product-img"></image>
+      </div>
+      <div class="right">
+        <text class="title">{{product.item_name}}</text>
+        <div class="right-icon-area">
+          <div class="score-area">
+            <div for="{{scoreStar}}">
+              <image src="../Common/star-yellow.svg" class="star-icon"></image>
             </div>
-            <div class="right">
-                <text class="title">{{product.title}}</text>
-                <div for="{{product.score}}">
-                    <image src="../Common/star-yellow.svg" class="star-icon"></image>
-                </div>
-            </div>
+            <image src="../Common/star-half.svg" class="star-icon" show="{{scoreStarHalf}}"></image>
+          </div>
+          <div class="collect-area" onclick="collectItems">
+            <image src="../Common/collection.svg" class="collect-icon"></image>
+            <text class="collect-text">收藏</text>
+          </div>
         </div>
-        <tabs>
-            <!-- 成分及匹配展示区域 -->
-            <tab-bar mode="fixed">
-                <text>成分</text>
-                <text>匹配</text>
-            </tab-bar>
-            <tab-content>
-                <div>
-                    <div class="component-list" for="{{product.component}}">
-                        <text class="component">{{$item}}</text>
-                    </div>
-                </div>
-                <div>
-                    <text>{{matchScore}}</text>
-                </div>
-            </tab-content>
-        </tabs>
-        <!-- 评价区域 -->
-        <div>
-            <div for="{{product.review}}" class="product-review">
-                <div class="review-card">
-                    <div class="review-left">
-                        <image src="{{$item.user.avatar}}" class="avatar"></image>
-                    </div>
-                    <div class="review-right">
-                        <text class="nickname">{{$item.user.nickname}}</text>
-                        <div class="review-score" for="{{$item.score}}">
-                            <image src="../Common/star-yellow.svg" class="review-star"></image>
-                        </div>
-                        <div class="review-content">
-                            <text>{{$item.content}}</text>
-                        </div>
-                    </div>
-                </div>
-                <div class="cut-line" />
-            </div>
-        </div>
-        <text>{{text}}</text>
-        <text>{{des}}</text>
+      </div>
     </div>
+    <div class="tab-cut-line" />
+    <tabs onchange="changeTab">
+      <!-- 成分及匹配展示区域 -->
+      <tab-bar mode="fixed">
+        <div>
+          <text class="tab-text-select" show="{{tabSelect}}">成分</text>
+          <text class="tab-text" show="{{!tabSelect}}">成分</text>
+        </div>
+        <div>
+          <text class="tab-text-select" show="{{!tabSelect}}">匹配</text>
+          <text class="tab-text" show="{{tabSelect}}">匹配</text>
+        </div>
+      </tab-bar>
+      <tab-content>
+        <!-- 成分栏 -->
+        <div class='composition-block'>
+          <div class="composition-area">
+            <div class="composition-list">
+              <text class="name">名称</text>
+              <text class="features">用途</text>
+              <text class="acne">粉刺</text>
+              <text class="stimulus">刺激</text>
+              <text class="rate-of-peace">安心度</text>
+            </div>
+            <list class="composition-list" for="{{product.composition}}" scrollpage="{{true}}">
+              <list-item type="composition">
+                <div class="composition-list">
+                  <text class="name">{{$item.name}}</text>
+                  <text class="features">{{$item.features}}</text>
+                  <text class="acne">{{$item.acne}}</text>
+                  <text class="stimulus">{{$item.stimulus}}</text>
+                  <text class="rate-of-peace">{{$item.rate_of_peace_od_mind}}</text>
+                </div>
+
+              </list-item>
+            </list>
+          </div>
+        </div>
+        <!-- 匹配度栏 -->
+        <div class='composition-block'>
+          <div class="tab-cut-line" />
+          <text>{{product.compatibility}}</text>
+        </div>
+      </tab-content>
+    </tabs>
+    <!-- 评价区域 -->
+    <div>
+      <!-- <div for="{{product.review}}" class="product-review">
+        <div class="review-card">
+          <div class="review-left">
+            <image src="{{$item.user.avatar}}" class="avatar"></image>
+          </div>
+          <div class="review-right">
+              <text class="nickname">{{$item.user.nickname}}</text>
+            <div class="review-score">
+              <div for="{{$item.score}}">
+                <image src="../Common/star-yellow.svg" class="review-star"></image>
+              </div>
+            </div>
+            <div class="review-content">
+              <text>{{$item.content}}</text>
+            </div>
+          </div>
+        </div>
+        <div class="cut-line" />
+      </div> -->
+    </div>
+  </div>
 </template>
 
 <script>
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
+import fetch from '@system.fetch'
+import storage from '@system.storage'
+import prompt from '@system.prompt'
 export default {
-    private: {
-        text: '欢迎使用Sofu',
-        des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
-        product: {
-            title: '无印良品敏感肌用保湿乳',
-            score: 3.65,
-            component: [
-                '水', '双丙甘醇', '辛基十二醇肉豆蔻酸酯', '1,2-戊二醇', '环聚二甲基硅氧烷', '蜂蜡'
-            ]
-        },
-        matchScore: 87,
+  private: {
+    product: {
+      title: '无印良品敏感肌用保湿乳',
+      score: 3.65,
+      component: [
+        '水', '双丙甘醇', '辛基十二醇肉豆蔻酸酯', '1,2-戊二醇', '环聚二甲基硅氧烷', '蜂蜡'
+      ],
+    },
+    matchScore: 87,
+    scoreStar: [],
+    scoreStarHalf: false,
+    true: true,
+    //是否选择了匹配tab
+    tabSelect: Boolean
+  },
+  onInit(e) {
+    console.log(e)
+    var that = this
+    var url = that.$app.$def.urlPrefix + 'sofu/api/item/ItemInfo/'
+    this.itemId = e.itemId
+    storage.get({
+      key: 'userId',
+      success: function (data) {
+        that.userId = data
+        console.log(data)
+        fetch.fetch({
+          url: url,
+          method: 'GET',
+          responseType: 'text',
+          data: {
+            user_id: data,
+            item_id: e.itemId
+          },
+          success: function (response) {
+            console.log(response.data)
+            var jsonResponse = JSON.parse(response.data)
+            that.product = jsonResponse
+            //计算应该放几颗星星
+            var starComNum = (jsonResponse.average_score / 2) - 0.5
+            for (let i = 0; i < starComNum; i++) {
+              that.scoreStar.push(true)
+            }
+            console.log(that.scoreStar)
+            //计算放几颗半星
+            var starHalfNum = jsonResponse.average_score % 2
+            if (starHalfNum == 1) {
+              that.scoreStarHalf = true
+            }
+            console.log(that.scoreStarHalf)
+          }
+        })
+      }
+    })
 
+  },
+  changeTab(e) {
+    console.log(e.index)
+    if (e.index == 0) {
+      this.tabSelect = true
+    } else {
+      this.tabSelect = false
     }
+  },
+  collectItems() {
+    var that = this
+    //获取当天日期
+    var url = that.$app.$def.urlPrefix + 'sofu/api/addcollectitem/addCollectItem/'
+    fetch.fetch({
+      url: url,
+      method: 'GET',
+      data: {
+        user_id: that.userId,
+        item_id: that.itemId,
+      },
+      success: function (response) {
+        console.log(response.data)
+        prompt.showToast({
+          message: "收藏成功"
+        })
+      }
+    })
+  }
 }
 </script>
 
@@ -79,18 +188,24 @@ export default {
 .pdt-detail-page {
   flex: 1;
   flex-direction: column;
-  align-items: center;
 }
 
 .cut-line {
   width: 100%;
-  height: 1px;
+  height: 2px;
   background-color: #cfcfcf;
+}
+
+.tab-cut-line {
+  width: 100%;
+  height: 2px;
+  background-color: #f68bcd;
 }
 
 .pdt-detail-page .top-block {
   margin-top: 50px;
   align-items: flex-start;
+  margin-bottom: 50px;
 }
 
 .pdt-detail-page .top-block .left {
@@ -105,11 +220,130 @@ export default {
 
 .pdt-detail-page .top-block .right {
   width: 65%;
+  flex-direction: column;
 }
 
-.pdt-detail-page .top-block .right .title{
-    margin-left: 50px;
-    margin-top: 50px;
-    font-size: 50px;
+.pdt-detail-page .top-block .right .right-icon-area {
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.pdt-detail-page .top-block .right .right-icon-area .score-area {
+  margin-left: 50px;
+  margin-top: 50px;
+}
+
+.pdt-detail-page .top-block .right .right-icon-area .score-area .star-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.pdt-detail-page .top-block .right .right-icon-area .collect-area {
+  flex-direction: column;
+  height: 160px;
+  background-color: #f0fa99;
+  padding-right: 30px;
+  padding-left: 40px;
+  border-left-width: 0px;
+  border-top-left-radius: 80px;
+  border-bottom-left-radius: 80px;
+  align-items: center;
+}
+
+.pdt-detail-page
+  .top-block
+  .right
+  .right-icon-area
+  .collect-area
+  .collect-icon {
+  width: 100px;
+  height: 100px;
+}
+
+.pdt-detail-page
+  .top-block
+  .right
+  .right-icon-area
+  .collect-area
+  .collect-text {
+  font-size: 40px;
+}
+
+.pdt-detail-page .top-block .right .title {
+  margin-left: 50px;
+  margin-top: 50px;
+  font-size: 50px;
+}
+
+.pdt-detail-page .tab-text {
+  font-size: 45px;
+  border-bottom: #f68bcd 2px;
+}
+
+.pdt-detail-page .tab-text-select {
+  color: #f68bcd;
+  font-size: 45px;
+  border-bottom: #f68bcd 2px;
+}
+
+.pdt-detail-page .composition-block {
+  flex-direction: column;
+}
+
+.pdt-detail-page .composition-block .composition-area {
+  flex-direction: column;
+}
+
+.pdt-detail-page .composition-block .composition-area .composition-list {
+  height: 150px;
+  justify-content: center;
+  border-bottom: #d4d4d4;
+  border-bottom-width: 1px;
+  width: 100%;
+}
+
+.pdt-detail-page .composition-block .composition-area .composition-list .name {
+  width: 38%;
+  font-size: 40px;
+  border-right-width: 1px;
+  border-right-color: #d4d4d4;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .features {
+  width: 12.5%;
+  font-size: 40px;
+  border-right-width: 1px;
+  border-right-color: #d4d4d4;
+}
+
+.pdt-detail-page .composition-block .composition-area .composition-list .acne {
+  width: 12.5%;
+  font-size: 40px;
+  border-right-width: 1px;
+  border-right-color: #d4d4d4;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .stimulus {
+  width: 12.5%;
+  font-size: 40px;
+  border-right-width: 1px;
+  border-right-color: #d4d4d4;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .rate-of-peace {
+  width: 14.5%;
+  font-size: 40px;
 }
 </style>

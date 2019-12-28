@@ -1,7 +1,7 @@
 <template>
   <!-- template里只能有一个根节点 -->
   <div class="home-page">
-    <tabs>
+    <tabs onchange="changeTabs">
       <tab-content scrollable="true">
         <!-- 我的肤质 -->
         <div class="myskin-contain">
@@ -40,15 +40,21 @@
             <input type="button" value="搜索" class="search-btn" onclick="searchPdt"></input>
           </div>
           <div class="cut-line" />
+          <!-- 护肤品列表展示区域 -->
           <div class="product-block" for="{{productList}}">
-            <div class="product-card" onclick="routePdtDetail">
-              <image src="../Common/logo.jpg" class="product-image"></image>
+            <div class="product-card" onclick="routePdtDetail($item.item_id)">
+              <image src="{{$item.url}}" class="product-image"></image>
               <div class="product-des">
                 <text class="product-title">{{$item.name}}</text>
-                <text class="product-detail">{{$item.average_score}}</text>
+                <div class="score-area">
+                  <div for="{{$item.starNum}}">
+                    <image src="../Common/star-yellow.svg" class="star-icon"></image>
+                  </div>
+                  <image src="../Common/star-half.svg" class="star-icon" show="{{$item.halfStar}}"></image>
+                </div>
               </div>
             </div>
-            <div class="cut-line" />
+            <div class="product-cut-line" />
           </div>
         </div>
         <!--我的-->
@@ -59,15 +65,15 @@
           </div>
           <div class="menu-block">
             <div class="menu-list">
-              <div class="meau-item">
+              <div class="meau-item" onclick="routeMyCollection">
                 <image src="../Common/collection.svg" class="icon"></image>
                 <text class="meau-text">我的收藏</text>
               </div>
-              <div class="meau-item">
+              <div class="meau-item" onclick="routeBrowseRecord">
                 <image src="../Common/browse.svg" class="icon"></image>
                 <text class="meau-text">我的浏览</text>
               </div>
-              <div class="meau-item">
+              <div class="meau-item" onclick="routeMyReview">
                 <image src="../Common/review.svg" class="icon"></image>
                 <text class="meau-text">我的评论</text>
               </div>
@@ -80,9 +86,19 @@
         </div>
       </tab-content>
       <tab-bar mode="fixed" class="tab-bar">
-        <image src="../Common/fuzhi-tab.svg" class="bar-icon"></image>
-        <image src="../Common/search-tab.svg" class="bar-icon"></image>
-        <image src="../Common/myinfo-tab.svg" class="bar-icon"></image>
+        <!-- 下面被选中时候的图标 -->
+        <div>
+          <image src="../Common/fuzhi-tab.svg" class="bar-icon" show="{{!tabSelect[0]}}"></image>
+          <image src="../Common/fuzhi-tab.svg" class="bar-icon-select" show="{{tabSelect[0]}}"></image>
+        </div>
+        <div>
+          <image src="../Common/search-tab.svg" class="bar-icon" show="{{!tabSelect[1]}}"></image>
+          <image src="../Common/search-tab.svg" class="bar-icon-select" show="{{tabSelect[1]}}"></image>
+        </div>
+        <div>
+          <image src="../Common/myinfo-tab.svg" class="bar-icon" show="{{!tabSelect[2]}}"></image>
+          <image src="../Common/myinfo-tab.svg" class="bar-icon-select" show="{{tabSelect[2]}}"></image>
+        </div>
       </tab-bar>
     </tabs>
   </div>
@@ -116,7 +132,9 @@ export default {
         name: '这是一个非常长的标题',
         average_score: '这是一条非常短的评论，我竟无言以对。'
       },
-    ]
+    ],
+    tabSelect: [true, false, false],
+    number:0
   },
   onShow() {
     var that = this
@@ -172,13 +190,42 @@ export default {
         console.log(response.data)
         var jsonResponse = JSON.parse(response.data)
         that.productList = []
+        that.starList = []
         for (let i = 0; i < jsonResponse.length; i++) {
-          that.productList.push(jsonResponse[i])
+          //获得产品的星星数量
+          var straTot= that.computeStrNum(jsonResponse[i].average_score)
+          var productInfo=jsonResponse[i]
+          productInfo.starNum=straTot.starNum
+          productInfo.halfStar=straTot.halfStar
+          that.productList.push(productInfo)
         }
+
       }
     })
 
   },
+  //计算星星个数
+  computeStrNum(score) {
+    var starNum = []
+    var halfStarNum = []
+    //计算应该放几颗星星
+    var starComNum = (score / 2) - 0.5
+    for (let i = 0; i < starComNum; i++) {
+      starNum.push(true)
+    }
+    //计算放几颗半星
+    var starHalfNum = score % 2
+    if (starHalfNum == 1) {
+      halfStarNum=true
+    } else {
+      halfStarNum=false
+    }
+    var starTotal = {}
+    starTotal.starNum=starNum
+    starTotal.halfStar=halfStarNum
+    return starTotal
+  },
+
   //根据数据映射相应的皮肤类型
   getSkinTypeStr(type1, type2) {
     //映射油干
@@ -239,6 +286,27 @@ export default {
       }
     })
   },
+  changeTabs(e) {
+    console.log(e.index)
+    var tabSelect = []
+    switch (e.index) {
+      case 0:
+        tabSelect = [true, false, false]
+        this.tabSelect = tabSelect
+        break
+      case 1:
+        tabSelect = [false, true, false]
+        this.tabSelect = tabSelect
+        break
+      case 2:
+        tabSelect = [false, false, true]
+        this.tabSelect = tabSelect
+        break
+      default:
+        tabSelect = [true, false, false]
+        this.tabSelect = tabSelect
+    }
+  },
   routeSkinTest() {
     router.push({
       uri: '/Skin-test'
@@ -249,9 +317,25 @@ export default {
       uri: '/Search-pdt'
     })
   },
-  routePdtDetail() {
+  routePdtDetail(itemId) {
     router.push({
-      uri: '/Pdt-detail'
+      uri: '/Pdt-detail',
+      params: { 'itemId': itemId }
+    })
+  },
+  routeMyCollection() {
+    router.push({
+      uri: '/My-collection'
+    })
+  },
+  routeMyReview() {
+    router.push({
+      uri: '/My-review'
+    })
+  },
+  routeBrowseRecord() {
+    router.push({
+      uri: '/Browse-record'
     })
   }
 }
@@ -270,6 +354,12 @@ export default {
 
 .home-page .tab-bar .bar-icon {
   height: 100px;
+}
+
+.home-page .tab-bar .bar-icon-select {
+  height: 100px;
+  background-color: #f0fa99;
+  border-radius: 50px;
 }
 
 .home-page .myskin-contain {
@@ -423,13 +513,15 @@ export default {
 }
 
 .home-page .search-contain .product-block .product-title {
-  font-size: 55px;
+  font-size: 50px;
   margin-top: 10px;
+  lines:2;
+  height: 120px;
 }
 
 .home-page .search-contain .product-block .product-detail {
   margin-top: 20px;
-  font-size: 50px;
+  font-size: 45px;
 }
 
 .home-page .search-contain .product-block .product-des {
@@ -440,9 +532,18 @@ export default {
   margin-left: 30px;
 }
 
-.home-page .search-contain .product-block .cut-line {
+.home-page .search-contain .product-block .product-des .score-area {
+  margin-top: 50px;
+}
+
+.home-page .search-contain .product-block .product-des .score-area .star-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.product-cut-line {
   width: 100%;
-  height: 1px;
+  height: 2px;
   background-color: #cfcfcf;
 }
 
