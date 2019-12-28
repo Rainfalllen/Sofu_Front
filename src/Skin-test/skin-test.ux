@@ -194,14 +194,12 @@ export default {
 
 .skin-test-page .progress-block {
   margin-top: 100px;
-  width: 100%;
   justify-content: center;
 }
 
 .skin-test-page .progress-block .progress {
   color: #f68bcd;
-  flex: 1;
-  width: 80%;
+  width: 800px;
 }
 
 .skin-test-page .question-block {

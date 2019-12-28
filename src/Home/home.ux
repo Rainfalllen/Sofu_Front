@@ -54,7 +54,6 @@
                 </div>
               </div>
             </div>
-            <div class="product-cut-line" />
           </div>
         </div>
         <!--我的-->
@@ -80,6 +79,10 @@
               <div class="meau-item">
                 <image src="../Common/myInfo.svg" class="icon"></image>
                 <text class="meau-text">我的信息</text>
+              </div>
+              <div class="meau-item">
+                <image src="../Common/allergy.svg" class="icon"></image>
+                <text class="meau-text">过敏分析</text>
               </div>
             </div>
           </div>
@@ -134,7 +137,7 @@ export default {
       },
     ],
     tabSelect: [true, false, false],
-    number:0
+    number: 0
   },
   onShow() {
     var that = this
@@ -193,10 +196,10 @@ export default {
         that.starList = []
         for (let i = 0; i < jsonResponse.length; i++) {
           //获得产品的星星数量
-          var straTot= that.computeStrNum(jsonResponse[i].average_score)
-          var productInfo=jsonResponse[i]
-          productInfo.starNum=straTot.starNum
-          productInfo.halfStar=straTot.halfStar
+          var straTot = that.computeStrNum(jsonResponse[i].average_score)
+          var productInfo = jsonResponse[i]
+          productInfo.starNum = straTot.starNum
+          productInfo.halfStar = straTot.halfStar
           that.productList.push(productInfo)
         }
 
@@ -216,13 +219,13 @@ export default {
     //计算放几颗半星
     var starHalfNum = score % 2
     if (starHalfNum == 1) {
-      halfStarNum=true
+      halfStarNum = true
     } else {
-      halfStarNum=false
+      halfStarNum = false
     }
     var starTotal = {}
-    starTotal.starNum=starNum
-    starTotal.halfStar=halfStarNum
+    starTotal.starNum = starNum
+    starTotal.halfStar = halfStarNum
     return starTotal
   },
 
@@ -314,7 +317,7 @@ export default {
   },
   routeSearch() {
     router.push({
-      uri: '/Search-pdt'
+      uri: '/My-skin'
     })
   },
   routePdtDetail(itemId) {
@@ -504,6 +507,7 @@ export default {
   margin-top: 40px;
   height: 300px;
   justify-content: center;
+  border-bottom:1px solid #d8d8d8;
 }
 
 .home-page .search-contain .product-block .product-image {
@@ -515,7 +519,7 @@ export default {
 .home-page .search-contain .product-block .product-title {
   font-size: 50px;
   margin-top: 10px;
-  lines:2;
+  lines: 2;
   height: 120px;
 }
 
@@ -537,8 +541,8 @@ export default {
 }
 
 .home-page .search-contain .product-block .product-des .score-area .star-icon {
-  width: 60px;
-  height: 60px;
+  width: 45px;
+  height: 45px;
 }
 
 .product-cut-line {

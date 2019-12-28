@@ -1,26 +1,12 @@
 <template>
     <!-- template里只能有一个根节点 -->
-    <div class="my-page">
-        <div class="top-block">
-            <image class="avarl" src="../Common/logo.jpg"></image>
-            <text class="nickname">Luxu</text>
-        </div>
-        <div class="menu-block">
-            <div class="menu-list">
-                <div class="meau-item">
-                    <image src="../Common/collection.svg" class="icon"></image>
-                    <text class="meau-text">我的收藏</text>
-                </div>
-                <div class="meau-item">
-                    <image src="../Common/browse.svg" class="icon"></image>
-                    <text class="meau-text">我的浏览</text>
-                </div>
-                <div class="meau-item">
-                    <image src="../Common/review.svg" class="icon"></image>
-                    <text class="meau-text">我的评论</text>
-                </div>
-            </div>
-        </div>
+    <div class="wrap">
+        <stack>
+            <div class="circle"></div>
+            <div class="top"></div>
+            <div class="halfcircle"></div>
+            <div class="bottom"></div>
+        </stack>
     </div>
 </template>
 
@@ -36,54 +22,92 @@ export default {
 </script>
 
 <style>
-.my-page {
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-}
-
-.my-page .top-block {
-  height: 500px;
-  width: 100%;
-  background-color: #f68bcd;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.my-page .top-block .avarl {
+.warp {
   height: 200px;
   width: 200px;
-  border: 1px solid #000000;
+}
+
+.circle {
+  height: 200px;
+  width: 200px;
+  box-sizing: border-box;
+  border: 20px solid red;
   border-radius: 100px;
+  /* position: absolute; */
+  content: "";
 }
 
-.my-page .top-block .nickname {
-  margin-top: 50px;
-  font-size: 55px;
+.halfcircle {
+  /* position: absolute; */
+  margin-top: 100px;
+  height: 100px;
+  width: 200px;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+  /* background-color: #ffffff; */
+  border-left: 20px solid red;
+  border-right: 20px solid red;
+  border-bottom: 20px solid red;
 }
 
-.my-page .menu-block {
+.top {
+  position: absolute;
+  left: 0px;
+  width: 200px;
+  height: 100px;
+  background-color: #ffffff;
+  top: 0;
+  width: 200px;
+  height: 100px;
+  transform-origin: 100px 100px;
+  animation-name: test;
+  animation-timing-function: linear;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+  animation-delay: 1000ms;
 }
 
-.my-page .menu-block .menu-list {
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  border-top: 1px #7e7e7e;
+.bottom {
+  position: absolute;
+  left: 0px;
+  width: 200px;
+  height: 100px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  width: 200px;
+  height: 100px;
+  transform-origin: 100px 0px;
+  animation-name: test;
+  animation-timing-function: linear;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+  margin-top: 100px;
 }
 
-.my-page .menu-block .menu-list .meau-item {
-  height: 150px;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px #7e7e7e;
+.top-ani {
+  width: 200px;
+  height: 200px;
+  background-color: #00ffff;
 }
 
-.my-page .menu-block .menu-list .meau-item .icon {
-  height: 80px;
-  width: 80px;
-  margin-right: 60px;
+.test {
+  animation-name: test;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes test {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  99% {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(180deg);
+    opacity: 0;
+  }
 }
 </style>

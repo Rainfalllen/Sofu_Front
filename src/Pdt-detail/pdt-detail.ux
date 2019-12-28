@@ -25,7 +25,7 @@
     <div class="tab-cut-line" />
     <tabs onchange="changeTab">
       <!-- 成分及匹配展示区域 -->
-      <tab-bar mode="fixed">
+      <tab-bar mode="fixed" class="tab-bar">
         <div>
           <text class="tab-text-select" show="{{tabSelect}}">成分</text>
           <text class="tab-text" show="{{!tabSelect}}">成分</text>
@@ -40,20 +40,40 @@
         <div class='composition-block'>
           <div class="composition-area">
             <div class="composition-list">
-              <text class="name">名称</text>
-              <text class="features">用途</text>
-              <text class="acne">粉刺</text>
-              <text class="stimulus">刺激</text>
-              <text class="rate-of-peace">安心度</text>
+              <div class="name-area">
+                <text class="name">名称</text>
+              </div>
+              <div class="features-area">
+                <text class="features">用途</text>
+              </div>
+              <div class="features-area">
+                <text class="numtitle">粉刺</text>
+              </div>
+              <div class="features-area">
+                <text class="numtitle">刺激</text>
+              </div>
+              <div class="features-area">
+                <text class="numtitle">安心度</text>
+              </div>
             </div>
             <list class="composition-list" for="{{product.composition}}" scrollpage="{{true}}">
               <list-item type="composition">
                 <div class="composition-list">
-                  <text class="name">{{$item.name}}</text>
-                  <text class="features">{{$item.features}}</text>
-                  <text class="acne">{{$item.acne}}</text>
-                  <text class="stimulus">{{$item.stimulus}}</text>
-                  <text class="rate-of-peace">{{$item.rate_of_peace_od_mind}}</text>
+                  <div class="name-area">
+                    <text class="name">{{$item.name}}</text>
+                  </div>
+                  <div class="features-area">
+                    <text class="features">{{$item.features}}</text>
+                  </div>
+                  <div class="icon-area">
+                    <image src="{{numSrc[$item.acne]}}" class="number-icon"></image>
+                  </div>
+                  <div class="icon-area">
+                    <image src="{{numSrc[$item.stimulus]}}" class="number-icon"></image>
+                  </div>
+                  <div class="icon-area">
+                    <image src="{{numSrc[$item.rate_of_peace_od_mind]}}" class="number-icon"></image>
+                  </div>
                 </div>
 
               </list-item>
@@ -62,8 +82,15 @@
         </div>
         <!-- 匹配度栏 -->
         <div class='composition-block'>
-          <div class="tab-cut-line" />
           <text>{{product.compatibility}}</text>
+          <div class="wrap">
+            <stack>
+              <div class="circle"></div>
+              <div class="top {{circleAniTop}}"></div>
+              <div class="halfcircle"></div>
+              <div class="bottom {{circleAniBtm}}"></div>
+            </stack>
+          </div>
         </div>
       </tab-content>
     </tabs>
@@ -112,7 +139,22 @@ export default {
     scoreStarHalf: false,
     true: true,
     //是否选择了匹配tab
-    tabSelect: Boolean
+    tabSelect: Boolean,
+    numSrc: [
+      "../Common/numbers/0.svg",
+      "../Common/numbers/1.svg",
+      "../Common/numbers/2.svg",
+      "../Common/numbers/3.svg",
+      "../Common/numbers/4.svg",
+      "../Common/numbers/5.svg",
+      "../Common/numbers/6.svg",
+      "../Common/numbers/7.svg",
+      "../Common/numbers/8.svg",
+      "../Common/numbers/9.svg",
+      "../Common/numbers/10.svg",
+    ],
+    circleAniTop: '',
+    circleAniBtm: ''
   },
   onInit(e) {
     console.log(e)
@@ -148,6 +190,7 @@ export default {
               that.scoreStarHalf = true
             }
             console.log(that.scoreStarHalf)
+
           }
         })
       }
@@ -159,7 +202,11 @@ export default {
     if (e.index == 0) {
       this.tabSelect = true
     } else {
+      this.circleAni = ''
       this.tabSelect = false
+      this.circleAniTop = 'circle-ani-top'
+      this.circleAniBtm = 'circle-ani-bottom'
+      console.log(this.circleAniTop)
     }
   },
   collectItems() {
@@ -275,15 +322,17 @@ export default {
   font-size: 50px;
 }
 
-.pdt-detail-page .tab-text {
-  font-size: 45px;
-  border-bottom: #f68bcd 2px;
+.pdt-detail-page .tab-bar {
+  border-bottom: 2px solid #f68bcd;
 }
 
-.pdt-detail-page .tab-text-select {
+.pdt-detail-page .tab-bar .tab-text {
+  font-size: 45px;
+}
+
+.pdt-detail-page .tab-bar .tab-text-select {
   color: #f68bcd;
   font-size: 45px;
-  border-bottom: #f68bcd 2px;
 }
 
 .pdt-detail-page .composition-block {
@@ -302,9 +351,35 @@ export default {
   width: 100%;
 }
 
-.pdt-detail-page .composition-block .composition-area .composition-list .name {
-  width: 38%;
-  font-size: 40px;
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .icon-area {
+  width: 15%;
+  justify-content: center;
+  align-items: center;
+  border-right-color: #d4d4d4;
+  border-right-width: 1px;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .icon-area
+  .number-icon {
+  height: 60px;
+  width: 60px;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .name-area {
+  justify-content: center;
+  width: 40%;
   border-right-width: 1px;
   border-right-color: #d4d4d4;
 }
@@ -313,37 +388,115 @@ export default {
   .composition-block
   .composition-area
   .composition-list
+  .name-area
+  .name {
+  font-size: 40px;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .features-area {
+  width: 15%;
+  justify-content: center;
+  border-right-width: 1px;
+  border-right-color: #d4d4d4;
+}
+
+.pdt-detail-page
+  .composition-block
+  .composition-area
+  .composition-list
+  .features-area
   .features {
-  width: 12.5%;
   font-size: 40px;
-  border-right-width: 1px;
-  border-right-color: #d4d4d4;
-}
-
-.pdt-detail-page .composition-block .composition-area .composition-list .acne {
-  width: 12.5%;
-  font-size: 40px;
-  border-right-width: 1px;
-  border-right-color: #d4d4d4;
 }
 
 .pdt-detail-page
   .composition-block
   .composition-area
   .composition-list
-  .stimulus {
-  width: 12.5%;
+  .numtitle {
   font-size: 40px;
-  border-right-width: 1px;
-  border-right-color: #d4d4d4;
 }
 
-.pdt-detail-page
-  .composition-block
-  .composition-area
-  .composition-list
-  .rate-of-peace {
-  width: 14.5%;
-  font-size: 40px;
+/* 设置动画 */
+.warp {
+  height: 200px;
+  width: 200px;
+}
+
+.circle {
+  height: 200px;
+  width: 200px;
+  border: 20px solid red;
+  border-radius: 100px;
+}
+
+.halfcircle {
+  margin-top: 100px;
+  height: 100px;
+  width: 200px;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+  /* background-color: #ffffff; */
+  border-left: 20px solid red;
+  border-right: 20px solid red;
+  border-bottom: 20px solid red;
+}
+
+.top {
+  /* position: absolute; */
+  left: 0px;
+  width: 200px;
+  height: 100px;
+  background-color: #ffffff;
+  width: 200px;
+  height: 100px;
+}
+
+.bottom {
+  /* position: absolute; */
+  left: 0px;
+  width: 200px;
+  height: 100px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  width: 200px;
+  height: 100px;
+  margin-top: 100px;
+}
+
+.circle-ani-bottom {
+  animation-name: circle;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  transform-origin: 100px 0px;
+}
+
+.circle-ani-top {
+  animation-name: circle;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  transform-origin: 100px 100px;
+}
+
+@keyframes circle {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  99% {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(180deg);
+    opacity: 0;
+  }
 }
 </style>
