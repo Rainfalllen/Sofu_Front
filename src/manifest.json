@@ -60,6 +60,9 @@
       },
       "Browse-record": {
         "component": "browse-record"
+      },
+      "Comment": {
+        "component": "comment"
       }
     },
     "widgets": {
@@ -127,6 +130,10 @@
       },
       "Browse-record": {
         "titleBarText": "浏览记录",
+        "menu": false
+      },
+      "Comment": {
+        "titleBarText": "添加评价",
         "menu": false
       }
     }

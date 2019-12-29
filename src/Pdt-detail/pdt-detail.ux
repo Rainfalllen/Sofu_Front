@@ -81,41 +81,55 @@
           </div>
         </div>
         <!-- 匹配度栏 -->
-        <div class='composition-block'>
-          <text>{{product.compatibility}}</text>
+        <div class='match-score-block'>
           <div class="wrap">
             <stack>
               <div class="circle"></div>
               <div class="top {{circleAniTop}}"></div>
               <div class="halfcircle"></div>
               <div class="bottom {{circleAniBtm}}"></div>
+              <div class="score-blcok">
+                <text class="score-text">{{product.compatibility}}</text>
+              </div>
             </stack>
+          </div>
+          <div class="match-text-area">
+            <text class="match-text">匹配度</text>
+          </div>
+          <!-- 评价区域 -->
+          <div class="comment-area">
+            <div class="comment-btn-tab">
+              <div class="comment-btn">
+                <text class="comment-btn-text" onclick="routeComment">去评论</text>
+              </div>
+            </div>
+            <div for="{{review}}" class="comment-card">
+              <div class="head-block">
+                <div class="name-block">
+                  <image src="{{$item.portrait_url}}" class="avarl"></image>
+                  <text class="name-text">{{$item.user_name}}</text>
+                </div>
+                <div class="time-block">
+                  <text class="time-text">{{$item.comment_time}}</text>
+                </div>
+                <div class="score-block">
+                  <text class="score-text">评分： {{$item.score}}分</text>
+                </div>
+              </div>
+              <div class="content-area">
+                <div class="content-block">
+                  <text class="content-text">{{$item.content}}</text>
+                </div>
+              </div>
+              <div class="bottom-area">
+                <image class="like-icon" src="../Common/like.svg"></image>
+                <text class="like-text">{{$item.number_of_like}}</text>
+              </div>
+            </div>
           </div>
         </div>
       </tab-content>
     </tabs>
-    <!-- 评价区域 -->
-    <div>
-      <!-- <div for="{{product.review}}" class="product-review">
-        <div class="review-card">
-          <div class="review-left">
-            <image src="{{$item.user.avatar}}" class="avatar"></image>
-          </div>
-          <div class="review-right">
-              <text class="nickname">{{$item.user.nickname}}</text>
-            <div class="review-score">
-              <div for="{{$item.score}}">
-                <image src="../Common/star-yellow.svg" class="review-star"></image>
-              </div>
-            </div>
-            <div class="review-content">
-              <text>{{$item.content}}</text>
-            </div>
-          </div>
-        </div>
-        <div class="cut-line" />
-      </div> -->
-    </div>
   </div>
 </template>
 
@@ -125,6 +139,7 @@
 import fetch from '@system.fetch'
 import storage from '@system.storage'
 import prompt from '@system.prompt'
+import router from '@system.router'
 export default {
   private: {
     product: {
@@ -154,12 +169,13 @@ export default {
       "../Common/numbers/10.svg",
     ],
     circleAniTop: '',
-    circleAniBtm: ''
+    circleAniBtm: '',
+    review: [],
   },
   onInit(e) {
     console.log(e)
     var that = this
-    var url = that.$app.$def.urlPrefix + 'sofu/api/item/ItemInfo/'
+    var infourl = that.$app.$def.urlPrefix + 'sofu/api/item/ItemInfo/'
     this.itemId = e.itemId
     storage.get({
       key: 'userId',
@@ -167,7 +183,7 @@ export default {
         that.userId = data
         console.log(data)
         fetch.fetch({
-          url: url,
+          url: infourl,
           method: 'GET',
           responseType: 'text',
           data: {
@@ -175,7 +191,7 @@ export default {
             item_id: e.itemId
           },
           success: function (response) {
-            console.log(response.data)
+            // console.log(response.data)
             var jsonResponse = JSON.parse(response.data)
             that.product = jsonResponse
             //计算应该放几颗星星
@@ -195,7 +211,24 @@ export default {
         })
       }
     })
-
+    //获得物品评论
+    var reviewurl = that.$app.$def.urlPrefix + 'sofu/api/comment_item/check_comments/'
+    fetch.fetch({
+      url: reviewurl,
+      method: 'GET',
+      data: {
+        item_id: e.itemId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        for (let i = 0; i < jsonResponse.length; i++) {
+          that.review.push(jsonResponse[i])
+          //计算每个评论需要放几颗星星
+        }
+        console.log(that.review)
+      }
+    })
   },
   changeTab(e) {
     console.log(e.index)
@@ -211,7 +244,6 @@ export default {
   },
   collectItems() {
     var that = this
-    //获取当天日期
     var url = that.$app.$def.urlPrefix + 'sofu/api/addcollectitem/addCollectItem/'
     fetch.fetch({
       url: url,
@@ -226,6 +258,11 @@ export default {
           message: "收藏成功"
         })
       }
+    })
+  },
+  routeComment(){
+    router.push({
+      uri:'/Comment'
     })
   }
 }
@@ -421,6 +458,206 @@ export default {
   font-size: 40px;
 }
 
+.pdt-detail-page .match-score-block {
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.pdt-detail-page .match-score-block .wrap .score-blcok {
+  width: 200px;
+  height: 200px;
+  justify-content: center;
+}
+
+.pdt-detail-page .match-score-block .wrap .score-blcok .score-text {
+  font-size: 60px;
+}
+
+.pdt-detail-page .match-score-block .match-text-area {
+  justify-content: center;
+  margin-top: 30px;
+  width: 100%;
+  border-bottom: 1px solid #d4d4d4;
+  padding-bottom: 30px;
+}
+
+.pdt-detail-page .match-score-block .match-text-area .match-text {
+  font-size: 45px;
+}
+
+.pdt-detail-page .match-score-block .comment-area {
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.pdt-detail-page .match-score-block .comment-area .comment-btn-tab {
+  width: 100%;
+  justify-content: flex-end;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-btn-tab
+  .comment-btn {
+  width: 200px;
+  height: 100px;
+  background-color: #ffd816;
+  justify-content: center;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-btn-tab
+  .comment-btn
+  .comment-btn-text {
+  font-size: 45px;
+}
+
+.pdt-detail-page .match-score-block .comment-area .comment-card {
+  flex-direction: column;
+  justify-content: flex-start;
+  border-bottom: 1px solid #d4d4d4;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.pdt-detail-page .match-score-block .comment-area .comment-card .head-block {
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 10px;
+  padding-bottom: 30px;
+  width: 100%;
+  /* border-bottom: 1px solid #d4d4d4; */
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .name-block {
+  align-items: center;
+  width: 40%;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .name-block
+  .avarl {
+  width: 100px;
+  height: 100px;
+  border-radius: 60px;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .name-block
+  .name-text {
+  margin-left: 15px;
+  font-size: 40px;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .time-block {
+  width: 30%;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .time-block
+  .time-text {
+  font-size: 40px;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .score-block {
+  width: 30%;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .head-block
+  .score-block
+  .score-text {
+  font-size: 40px;
+}
+
+.pdt-detail-page .match-score-block .comment-area .comment-card .content-area {
+  margin-top: 30px;
+  margin-left: 70px;
+  margin-right: 50px;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .content-area
+  .content-block {
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .content-area
+  .content-block
+  .content-text {
+  font-size: 45px;
+}
+
+.pdt-detail-page .match-score-block .comment-area .comment-card .bottom-area {
+  margin-top: 30px;
+  margin-left: 70px;
+  margin-right: 50px;
+  justify-content: flex-end;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .bottom-area
+  .like-icon {
+  height: 50px;
+  width: 50px;
+}
+
+.pdt-detail-page
+  .match-score-block
+  .comment-area
+  .comment-card
+  .bottom-area
+  .like-text {
+  font-size: 40px;
+}
+
 /* 设置动画 */
 .warp {
   height: 200px;
@@ -430,7 +667,7 @@ export default {
 .circle {
   height: 200px;
   width: 200px;
-  border: 20px solid red;
+  border: 15px solid #ffd816;
   border-radius: 100px;
 }
 
@@ -441,13 +678,13 @@ export default {
   border-bottom-left-radius: 100px;
   border-bottom-right-radius: 100px;
   /* background-color: #ffffff; */
-  border-left: 20px solid red;
-  border-right: 20px solid red;
-  border-bottom: 20px solid red;
+  border-left: 15px solid #ffd816;
+  border-right: 15px solid #ffd816;
+  border-bottom: 15px solid #ffd816;
 }
 
 .top {
-  /* position: absolute; */
+  position: absolute;
   left: 0px;
   width: 200px;
   height: 100px;
@@ -457,7 +694,7 @@ export default {
 }
 
 .bottom {
-  /* position: absolute; */
+  position: absolute;
   left: 0px;
   width: 200px;
   height: 100px;
@@ -470,19 +707,21 @@ export default {
 
 .circle-ani-bottom {
   animation-name: circle;
-  animation-duration: 1s;
+  animation-duration: 100ms;
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform-origin: 100px 0px;
+  animation-iteration-count: 1;
 }
 
 .circle-ani-top {
   animation-name: circle;
-  animation-duration: 1s;
-  animation-delay: 1s;
+  animation-duration: 100ms;
+  animation-delay: 100ms;
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform-origin: 100px 100px;
+  animation-iteration-count: 1;
 }
 
 @keyframes circle {

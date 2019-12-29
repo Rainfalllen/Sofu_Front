@@ -1,0 +1,44 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="comment-page">
+    <div class="comment-btn-tab">
+      <div class="mark-block" for="{{mark}}">
+        <image src="../Common/star-gray.svg" class="star-icon"></image>
+      </div>
+    </div>
+</template>
+
+<script>
+/* eslint-disable linebreak-style */
+import router from '@system.router'
+export default {
+  // eslint-disable-next-line linebreak-style
+  private: {
+    title: 'Sofu',
+    mark: [false, false, false, false, false]
+  },
+  routeLogin() {
+    router.push({
+      uri: '/Login'
+    })
+  },
+  routeRegister() {
+    router.push({
+      uri: '/Register'
+    })
+  }
+}
+</script>
+
+
+<style>
+.comment-page .comment-btn-tab {
+  width: 100%;
+  margin-left: 50px;
+}
+
+.comment-page .comment-btn-tab .mark-block .star-icon {
+  height: 80px;
+  width: 80px;
+}
+</style>
