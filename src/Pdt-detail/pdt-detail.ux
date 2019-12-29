@@ -122,7 +122,7 @@
                 </div>
               </div>
               <div class="bottom-area">
-                <image class="like-icon" src="../Common/like.svg"></image>
+                <image class="like-icon" src="../Common/like.svg" onclick="addLike($item.comment_id,$idx)"></image>
                 <text class="like-text">{{$item.number_of_like}}</text>
               </div>
             </div>
@@ -222,10 +222,11 @@ export default {
       success: function (response) {
         console.log(response.data)
         var jsonResponse = JSON.parse(response.data)
-        for (let i = 0; i < jsonResponse.length; i++) {
-          that.review.push(jsonResponse[i])
-          //计算每个评论需要放几颗星星
-        }
+        // for (let i = 0; i < jsonResponse.length; i++) {
+        //   that.review.push(jsonResponse[i])
+        //   //计算每个评论需要放几颗星星
+        // }
+        that.review=jsonResponse
         console.log(that.review)
       }
     })
@@ -263,6 +264,20 @@ export default {
   routeComment(){
     router.push({
       uri:'/Comment'
+    })
+  },
+  addLike(comment_id,idx){
+    var that=this
+    var url=that.$app.$def.urlPrefix + 'sofu/api/comment_item/add_comment_like/'
+    fetch.fetch({
+      url:url,
+      data:{
+        comment_id:comment_id
+      },
+      success:function(response){
+        console.log(response)
+        that.review[idx].number_of_like++
+      }
     })
   }
 }
@@ -356,6 +371,7 @@ export default {
 .pdt-detail-page .top-block .right .title {
   margin-left: 50px;
   margin-top: 50px;
+  margin-right: 50px;
   font-size: 50px;
 }
 
@@ -707,7 +723,7 @@ export default {
 
 .circle-ani-bottom {
   animation-name: circle;
-  animation-duration: 100ms;
+  animation-duration: 300ms;
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform-origin: 100px 0px;
@@ -716,8 +732,8 @@ export default {
 
 .circle-ani-top {
   animation-name: circle;
-  animation-duration: 100ms;
-  animation-delay: 100ms;
+  animation-duration: 300ms;
+  animation-delay: 300ms;
   animation-fill-mode: forwards;
   animation-timing-function: linear;
   transform-origin: 100px 100px;
