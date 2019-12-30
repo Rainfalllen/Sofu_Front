@@ -1,0 +1,247 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div class="myinfo-page">
+    <div class="avarl-block">
+      <image src="{{userInfo.portrait_url}}" class="avarl"></image>
+      <text class="avarl-text" onclick="updateAvarl">上传头像</text>
+    </div>
+    <div class="input-block">
+      <text class="input-text">昵称</text>
+      <input type="text" class="input" placeholder="{{userInfo.name}}" onchange="saveName"></input>
+    </div>
+    <div class="input-block">
+      <text class="input-text">电话</text>
+      <input type="text" class="input" placeholder="{{userInfo.telephone}}" onchange="savePhoneNum"></input>
+    </div>
+    <div class="input-block">
+      <text class="input-text">邮箱</text>
+      <input type="text" class="input" placeholder="{{userInfo.e_mail}}" onchange="saveEmail"></input>
+    </div>
+    <div class="input-block">
+      <text class="input-text">性别</text>
+      <div for="{{sexCheck}}" class="sex-block">
+        <input type="radio" class="sex-radio" onchange="saveSex" value="{{$item.id}}" checked="{{sex[$idx]}}"></input>
+        <label class="sex-text">{{$item.content}}</label>
+      </div>
+    </div>
+    <div class="input-block">
+      <text class="input-text">生日</text>
+      <picker type="date" value="{{userInfo.birthday}}" class="birthday-datecheck" onchange="saveDate"></picker>
+    </div>
+    <div class="commit-area">
+      <input type="button" value="保存" class="commit-btn" onclick="commitUserInfo"></input>
+    </div>
+  </div>
+</template>
+
+<script>
+import storage from '@system.storage'
+import router from '@system.router'
+import fetch from '@system.fetch'
+import image from '@system.image'
+import media from '@system.media'
+import prompt from '@system.prompt'
+export default {
+  private: {
+    text: '欢迎使用Sofu',
+    des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
+    sexCheck: [
+      { id: "0", content: "男" },
+      { id: "1", content: "女" }
+    ],
+    userInfo: {
+      name:String
+    },
+    sex:[]
+  },
+  onInit(e) {
+    var that = this
+    that.userId = e.userId
+    var myInfoUrl = that.$app.$def.urlPrefix + 'sofu/api/register/check_info/'
+    fetch.fetch({
+      url: myInfoUrl,
+      method: 'GET',
+      data: {
+        user_id: that.userId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        if (jsonResponse.e_mail == null) {
+          jsonResponse.e_mail = '暂无'
+        }
+        if(jsonResponse.sex==0){
+          that.sex=[true,false]
+        }else{
+          that.sex=[false,true]
+        }
+        that.userInfo = jsonResponse
+        console.log(that.userInfo)
+      }
+    })
+  },
+  updateAvarl() {
+    var that = this
+    //读取系统图片
+    media.pickImage({
+      success: function (imageData) {
+        console.log(imageData)
+        var size = imageData.size / 1000
+        console.log(size)
+        //如果图片大于50kb，则压缩到50k以下
+        if (size > 50) {
+          //计算压缩倍数
+          var multNum = size / 50
+          var uri = imageData.uri
+          console.log(multNum)
+          console.log(uri)
+          image.compressImage({
+            uri: uri,
+            ratio: multNum,
+            format: 'PNG',
+            success: function (compressData) {
+              console.log(compressData)
+              //将图片替换现在的头像
+              that.userInfo.portrait_url = compressData.uri
+            },
+            fail: function (data, code) {
+              console.log(`handling fail, code = ${code}`)
+            }
+          })
+        }
+      }
+    })
+  },
+  saveName(e){
+    this.name=e.value
+  },
+  savePhoneNum(e){
+    this.telephone=e.value
+  },
+  saveEmail(e){
+    this.e_mail=e.value
+  },
+  saveSex(e) {
+    //由于直接存储页面中在选择日期时会丢失据，所以换为storage
+    storage.set({
+      key: 'sexId',
+      value: e.value,
+    })
+    this.sex = e.value
+    console.log(e.value)
+  },
+  saveDate(e) {
+    console.log(e)
+    this.userInfo.birthday = e.year + '-' + (e.month + 1) + '-' + e.day
+    console.log(this.userInfo.birthday)
+  },
+  commitUserInfo(){
+    var that=this
+    //更新个人信息
+    storage.get({
+      key: 'sexId',
+      success:function(data){
+        var url = that.$app.$def.urlPrefix + 'sofu/api/register/update_info/'
+        console.log(data)
+        fetch.fetch({
+          url:url,
+          method:'POST',
+          data:{
+            user_id:that.userId,
+            name:that.name,
+            telephone:that.telephone,
+            sex:data,
+            birthday:that.userInfo.birthday,
+            e_mail:that.email
+          },
+          success:function(response){
+            console.log(response)
+            prompt.showToast({
+              message:"修改成功"
+            })
+            router.back()
+          }
+        })
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.myinfo-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.myinfo-page .avarl-block {
+  justify-content: flex-start;
+  margin-top: 70px;
+  height: 300px;
+  width: 100%;
+  padding-left: 100px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.myinfo-page .avarl-block .avarl {
+  height: 200px;
+  width: 200px;
+  border-radius: 100px;
+}
+
+.myinfo-page .avarl-block .avarl-text {
+  margin-left: 30px;
+  font-size: 40px;
+}
+
+.myinfo-page .input-block {
+  height: 150px;
+  width: 100%;
+  padding-left: 100px;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.myinfo-page .input-block .input-text {
+  font-size: 45px;
+}
+
+.myinfo-page .input-block .input {
+  font-size: 45px;
+  padding-left: 100px;
+}
+
+.myinfo-page .input-block .sex-block {
+  margin-right: 10px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.myinfo-page .input-block .sex-radio {
+  margin-left: 100px;
+}
+
+.myinfo-page .input-block .sex-block .sex-text {
+  margin-left: 20px;
+  font-size: 45px;
+}
+
+.birthday-datecheck {
+  margin-left: 100px;
+  font-size: 45px;
+}
+
+.myinfo-page .commit-area {
+  margin-top: 200px;
+}
+
+.myinfo-page .commit-area .commit-btn {
+  width: 400px;
+  height: 150px;
+  font-size: 50px;
+  background-color: #f68bcd;
+  border-radius: 20px;
+  color: #ffffff;
+}
+</style>

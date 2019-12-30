@@ -1,9 +1,18 @@
 <template>
   <!-- template里只能有一个根节点 -->
   <div class="comment-page">
-    <div class="comment-btn-tab">
-      <div class="mark-block" for="{{mark}}">
-        <image src="../Common/star-gray.svg" class="star-icon"></image>
+    <div class="comment-area">
+      <text class="title-text">给护肤品评个分吧</text>
+      <div class="mark-block">
+        <div for="{{mark}}">
+          <image src="{{src[$item]}}" class="star-icon" onclick="saveScore($idx)"></image>
+        </div>
+      </div>
+      <div class="input-area">
+        <textarea class="textarea" placeholder="写点什么吧（选填）" onchange="saveComment"></textarea>
+      </div>
+      <div class="commit-area">
+        <input type="button" value="提交" class="commit-btn" onclick="commitComment"></input>
       </div>
     </div>
 </template>
@@ -11,11 +20,19 @@
 <script>
 /* eslint-disable linebreak-style */
 import router from '@system.router'
+import fetch from '@system.fetch'
+import prompt from '@system.prompt'
 export default {
   // eslint-disable-next-line linebreak-style
   private: {
     title: 'Sofu',
-    mark: [false, false, false, false, false]
+    mark: [0, 0, 0, 0, 0],
+    src: ['../Common/star-gray.svg', '../Common/star-yellow.svg'],
+    score: 0
+  },
+  onInit(e) {
+    this.itemId = e.itemId
+    this.userId = e.userId
   },
   routeLogin() {
     router.push({
@@ -26,19 +43,102 @@ export default {
     router.push({
       uri: '/Register'
     })
+  },
+  saveScore(idx) {
+    //将前面的全都设置为黄色
+    this.mark = [0, 0, 0, 0, 0]
+    for (let i = 0; i <= idx; i++) {
+      this.mark[i] = 1
+    }
+    //转化为分数存下来
+    this.score = (idx + 1) * 2
+    console.log(this.score)
+  },
+  saveComment(e) {
+    this.comment = e.value
+    console.log(this.comment)
+  },
+  commitComment() {
+    var that = this
+    if (that.score != 0) {
+      var url = this.$app.$def.urlPrefix + 'sofu/api/comment_item/add_comment/'
+      fetch.fetch({
+        url: url,
+        method: 'POST',
+        data: {
+          item_id: that.itemId,
+          user_id: that.userId,
+          content: that.comment,
+          score: that.score
+        },
+        success: function (response) {
+          console.log(response)
+          prompt.showToast({
+            message: "评价成功"
+          })
+          router.back()
+        }
+      })
+    } else {
+      console.log(that.score)
+      prompt.showToast({
+        message: "请打分"
+      })
+    }
+
   }
 }
 </script>
 
 
 <style>
-.comment-page .comment-btn-tab {
+.comment-page .comment-area {
   width: 100%;
-  margin-left: 50px;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px;
 }
 
-.comment-page .comment-btn-tab .mark-block .star-icon {
+.comment-page .comment-area .title-text {
+  font-size: 50px;
+}
+
+.comment-page .comment-area .mark-block {
+  margin: 50px;
+  width: 100%;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.comment-page .comment-area .mark-block .star-icon {
   height: 80px;
   width: 80px;
+}
+
+.comment-page .comment-area .input-area {
+  width: 100%;
+  padding-left: 50px;
+  padding-right: 50px;
+  margin-top: 50px;
+}
+
+.comment-page .comment-area .input-area .textarea {
+  height: 400px;
+  width: 100%;
+  font-size: 50px;
+  border: 1px solid #d4d4d4;
+}
+
+.comment-page .comment-area .commit-area {
+  margin-top: 200px;
+}
+
+.comment-page .comment-area .commit-area .commit-btn {
+  width: 400px;
+  height: 150px;
+  font-size: 50px;
+  background-color: #f68bcd;
+  border-radius: 20px;
+  color: #ffffff;
 }
 </style>

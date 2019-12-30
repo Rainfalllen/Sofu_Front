@@ -191,8 +191,10 @@ export default {
             item_id: e.itemId
           },
           success: function (response) {
-            // console.log(response.data)
+             console.log(response.data)
             var jsonResponse = JSON.parse(response.data)
+            var compatibility=JSON.stringify(jsonResponse.compatibility)
+            jsonResponse.compatibility=compatibility.substring(0,4)
             that.product = jsonResponse
             //计算应该放几颗星星
             var starComNum = (jsonResponse.average_score / 2) - 0.5
@@ -218,6 +220,28 @@ export default {
       method: 'GET',
       data: {
         item_id: e.itemId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        // for (let i = 0; i < jsonResponse.length; i++) {
+        //   that.review.push(jsonResponse[i])
+        //   //计算每个评论需要放几颗星星
+        // }
+        that.review=jsonResponse
+        console.log(that.review)
+      }
+    })
+  },
+  onShow() {
+    var that=this
+      //获得物品评论
+    var reviewurl = that.$app.$def.urlPrefix + 'sofu/api/comment_item/check_comments/'
+    fetch.fetch({
+      url: reviewurl,
+      method: 'GET',
+      data: {
+        item_id: that.itemId
       },
       success: function (response) {
         console.log(response.data)
@@ -263,7 +287,11 @@ export default {
   },
   routeComment(){
     router.push({
-      uri:'/Comment'
+      uri:'/Comment',
+      params:{
+        itemId:this.itemId,
+        userId:this.userId
+      }
     })
   },
   addLike(comment_id,idx){
@@ -435,6 +463,7 @@ export default {
   width: 40%;
   border-right-width: 1px;
   border-right-color: #d4d4d4;
+  padding-left: 20px;
 }
 
 .pdt-detail-page

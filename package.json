@@ -1,21 +1,25 @@
 {
-  "name": "sofu_front",
-  "version": "1.0.0",
+  "name": "Sample",
+  "version": "1.6.0",
   "subversion": {
-    "toolkit": "0.6.12"
+    "toolkit": "0.6.1"
   },
-  "description": "",
+  "description": "Quickapp Samples",
   "scripts": {
+    "server": "hap server",
+    "debug": "hap debug",
     "build": "hap build",
     "release": "hap release",
-    "server": "hap server",
     "watch": "hap watch"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.12.1",
-    "eslint-plugin-hybrid": "0.0.5",
-    "hap-toolkit": "0.6.12",
-    "@types/quickapp": "git+https://github.com/vivoquickapp/quickapp-types.git"
+    "catching": "^1.0.2",
+    "hap-toolkit": "^0.6.1",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "qrcode-js": "0.0.2"
+  },
+  "dependencies": {
+    "hsl-to-hex": "^1.0.0"
   }
 }

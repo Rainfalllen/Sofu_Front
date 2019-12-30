@@ -1,25 +1,139 @@
 <!--  -->
 <template>
   <!-- template里只能有一个根节点 -->
-  <div class="demo-page">
-    <text>{{text}}</text>
-    <text>{{des}}</text>
+  <div class="review-page">
+    <div>
+      <div for="{{review}}" class="comment-card">
+        <div class="head-block">
+          <div class="name-block">
+            <image src="{{$item.portrait_url}}" class="avarl"></image>
+            <text class="name-text">{{$item.user_name}}</text>
+          </div>
+          <div class="time-block">
+            <text class="time-text">{{$item.comment_time}}</text>
+          </div>
+          <div class="score-block">
+            <text class="score-text">评分： {{$item.score}}分</text>
+          </div>
+        </div>
+        <div class="content-area">
+          <div class="content-block">
+            <text class="content-text">{{$item.content}}</text>
+          </div>
+        </div>
+        <div class="bottom-area">
+          <image class="like-icon" src="../Common/like.svg" onclick="addLike($item.comment_id,$idx)"></image>
+          <text class="like-text">{{$item.number_of_like}}</text>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import router from '@system.router'
+import fetch from '@system.fetch'
 export default {
   private: {
     text: '欢迎使用Sofu',
     des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
-  }
+  },
+  onInit(e) {
+    var that=this
+    this.userId = e.userId
+    var url = that.$app.$def.urlPrefix + 'sofu/api/skin_type/type/'
+    fetch
+  },
 }
 </script>
 
 <style>
-  .demo-page {
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-  }
+.review-page {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.review-page .comment-area .comment-card {
+  flex-direction: column;
+  justify-content: flex-start;
+  border-bottom: 1px solid #d4d4d4;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.review-page .comment-area .comment-card .head-block {
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 10px;
+  padding-bottom: 30px;
+  width: 100%;
+  /* border-bottom: 1px solid #d4d4d4; */
+}
+
+.review-page .comment-area .comment-card .head-block .name-block {
+  align-items: center;
+  width: 40%;
+}
+
+.review-page .comment-area .comment-card .head-block .name-block .avarl {
+  width: 100px;
+  height: 100px;
+  border-radius: 60px;
+}
+
+.review-page .comment-area .comment-card .head-block .name-block .name-text {
+  margin-left: 15px;
+  font-size: 40px;
+}
+
+.review-page .comment-area .comment-card .head-block .time-block {
+  width: 30%;
+}
+
+.review-page .comment-area .comment-card .head-block .time-block .time-text {
+  font-size: 40px;
+}
+
+.review-page .comment-area .comment-card .head-block .score-block {
+  width: 30%;
+}
+
+.review-page .comment-area .comment-card .head-block .score-block .score-text {
+  font-size: 40px;
+}
+
+.review-page .comment-area .comment-card .content-area {
+  margin-top: 30px;
+  margin-left: 70px;
+  margin-right: 50px;
+}
+
+.review-page .comment-area .comment-card .content-area .content-block {
+}
+
+.review-page
+  .comment-area
+  .comment-card
+  .content-area
+  .content-block
+  .content-text {
+  font-size: 45px;
+}
+
+.review-page .comment-area .comment-card .bottom-area {
+  margin-top: 30px;
+  margin-left: 70px;
+  margin-right: 50px;
+  justify-content: flex-end;
+}
+
+.review-page .comment-area .comment-card .bottom-area .like-icon {
+  height: 50px;
+  width: 50px;
+}
+
+.review-page .comment-area .comment-card .bottom-area .like-text {
+  font-size: 40px;
+}
 </style>

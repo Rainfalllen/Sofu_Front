@@ -23,9 +23,9 @@
           <!-- 肤质报告展示 -->
           <div class="report-block">
             <text class="report-title">肤质报告&指南</text>
-            <text class="report-content">{{report.content}}</text>
+            <richtext type="html" class="report-content">{{report}}</richtext>
             <div style="justify-content:flex-end;width:100%;">
-              <text class="to-more" value=">>查看更多" onclick="routeSearch"></text>
+              <text class="to-more" value=">>查看更多" onclick="routeReport"></text>
             </div>
           </div>
           <div class="cut-line" />
@@ -76,7 +76,7 @@
                 <image src="../Common/review.svg" class="icon"></image>
                 <text class="meau-text">我的评论</text>
               </div>
-              <div class="meau-item">
+              <div class="meau-item" onclick="routeMyInfo">
                 <image src="../Common/myInfo.svg" class="icon"></image>
                 <text class="meau-text">我的信息</text>
               </div>
@@ -177,6 +177,20 @@ export default {
             var jsonResponse = JSON.parse(response.data)
             that.userInfo = jsonResponse
             console.log(that.userInfo)
+          }
+        })
+        //获得肤质报告
+        var reportUrl = that.$app.$def.urlPrefix + 'sofu/api/skin_report/report/'
+        fetch.fetch({
+          url: reportUrl,
+          method: 'GET',
+          data: {
+            user_id: that.userId
+          },
+          success: function (response) {
+            var jsonResponse = JSON.parse(response.data)
+            that.report = jsonResponse.report.substring(0, 112) + "..."
+            console.log(that.report)
           }
         })
       }
@@ -315,9 +329,12 @@ export default {
       uri: '/Skin-test'
     })
   },
-  routeSearch() {
+  routeReport() {
     router.push({
-      uri: '/My-skin'
+      uri: '/Report',
+      params: {
+        userId: this.userId
+      }
     })
   },
   routePdtDetail(itemId) {
@@ -328,17 +345,31 @@ export default {
   },
   routeMyCollection() {
     router.push({
-      uri: '/My-collection'
+      uri: '/My-collection',
+      params: {
+        userId: this.userId
+      }
     })
   },
   routeMyReview() {
     router.push({
-      uri: '/My-review'
+      uri: '/My-review',
+      params: {
+        userId: this.userId
+      }
     })
   },
   routeBrowseRecord() {
     router.push({
       uri: '/Browse-record'
+    })
+  },
+  routeMyInfo() {
+    router.push({
+      uri: '/My-info',
+      params: {
+        userId: this.userId
+      }
     })
   }
 }
@@ -507,7 +538,7 @@ export default {
   margin-top: 40px;
   height: 300px;
   justify-content: center;
-  border-bottom:1px solid #d8d8d8;
+  border-bottom: 1px solid #d8d8d8;
 }
 
 .home-page .search-contain .product-block .product-image {
