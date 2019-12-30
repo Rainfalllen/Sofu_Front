@@ -2,12 +2,11 @@
 <template>
   <!-- template里只能有一个根节点 -->
   <div class="review-page">
-    <div>
+    <div class="comment-area">
       <div for="{{review}}" class="comment-card">
         <div class="head-block">
           <div class="name-block">
-            <image src="{{$item.portrait_url}}" class="avarl"></image>
-            <text class="name-text">{{$item.user_name}}</text>
+            <text class="name-text" onclick="routePdtDetail($item.item_id)">{{$item.item_name}}</text>
           </div>
           <div class="time-block">
             <text class="time-text">{{$item.comment_time}}</text>
@@ -22,8 +21,11 @@
           </div>
         </div>
         <div class="bottom-area">
-          <image class="like-icon" src="../Common/like.svg" onclick="addLike($item.comment_id,$idx)"></image>
-          <text class="like-text">{{$item.number_of_like}}</text>
+          <text class="like-text" onclick="deleteComment($item.comment_id)">删除</text>
+          <div>
+            <image class="like-icon" src="../Common/like.svg" onclick="addLike($item.comment_id,$idx)"></image>
+            <text class="like-text">{{$item.number_of_like}}</text>
+          </div>
         </div>
       </div>
     </div>
@@ -33,17 +35,68 @@
 <script>
 import router from '@system.router'
 import fetch from '@system.fetch'
+import prompt from '@system.prompt'
 export default {
   private: {
     text: '欢迎使用Sofu',
-    des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
+    des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
+    review: []
   },
   onInit(e) {
-    var that=this
+    var that = this
     this.userId = e.userId
-    var url = that.$app.$def.urlPrefix + 'sofu/api/skin_type/type/'
-    fetch
+    var url = that.$app.$def.urlPrefix + 'sofu/api/getcommentrecord/getCommentRecord/'
+    fetch.fetch({
+      url: url,
+      data: {
+        user_id: that.userId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        that.review = jsonResponse
+      }
+    })
   },
+  onShow() {
+    var that=this
+    var url = that.$app.$def.urlPrefix + 'sofu/api/getcommentrecord/getCommentRecord/'
+      fetch.fetch({
+      url: url,
+      data: {
+        user_id: that.userId
+      },
+      success: function (response) {
+        console.log(response.data)
+        var jsonResponse = JSON.parse(response.data)
+        that.review = jsonResponse
+      }
+    })
+  },
+  routePdtDetail(itemId) {
+    router.push({
+      uri: '/Pdt-detail',
+      params: { 'itemId': itemId }
+    })
+  },
+  deleteComment(comment_id){
+    console.log(comment_id)
+    var that = this
+    var url = that.$app.$def.urlPrefix + 'sofu/api/comment_item/delete_comment/'
+    fetch.fetch({
+      url: url,
+      data: {
+        comment_id: comment_id
+      },
+      success: function (response) {
+        console.log(response.data)
+        prompt.showToast({
+          message:"删除成功"
+        })
+        that.onShow()
+      }
+    })
+  }
 }
 </script>
 
@@ -52,6 +105,13 @@ export default {
   flex: 1;
   flex-direction: column;
   align-items: center;
+}
+
+.review-page .comment-area {
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
 }
 
 .review-page .comment-area .comment-card {
@@ -85,6 +145,7 @@ export default {
 .review-page .comment-area .comment-card .head-block .name-block .name-text {
   margin-left: 15px;
   font-size: 40px;
+  lines: 1;
 }
 
 .review-page .comment-area .comment-card .head-block .time-block {
@@ -125,7 +186,7 @@ export default {
   margin-top: 30px;
   margin-left: 70px;
   margin-right: 50px;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .review-page .comment-area .comment-card .bottom-area .like-icon {

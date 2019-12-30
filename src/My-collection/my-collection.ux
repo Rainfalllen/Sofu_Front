@@ -6,7 +6,7 @@
       <div class="product-card" onclick="routePdtDetail($item.item_id)">
         <image src="{{$item.url}}" class="product-image"></image>
         <div class="product-des">
-          <text class="product-title">{{$item.name}}</text>
+          <text class="product-title">{{$item.item_name}}</text>
           <div class="score-area">
             <div for="{{$item.starNum}}">
               <image src="../Common/star-yellow.svg" class="star-icon"></image>
@@ -26,13 +26,62 @@ export default {
 
   private: {
     text: '欢迎使用Sofu',
-    des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
+    des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
+    productList: []
   },
   onInit(e) {
-    var that=this
-    this.userId = e.userId
-    var skinUrl = that.$app.$def.urlPrefix + 'sofu/api/skin_type/type/'
-    fetch
+    var that = this
+    console.log(e.userId)
+    that.userId = e.userId
+    console.log(that.userId)
+    var url = that.$app.$def.urlPrefix + 'sofu/api/getcollectrecord/getCollectRecord/'
+    fetch.fetch({
+      url: url,
+      data: {
+        user_id: e.userId
+      },
+      success: function (response) {
+        console.log(response)
+        var jsonResponse = JSON.parse(response.data)
+        for (let i = 0; i < jsonResponse.length; i++) {
+          //获得产品的星星数量
+          var straTot = that.computeStrNum(jsonResponse[i].comment_score)
+          var productInfo = jsonResponse[i]
+          productInfo.starNum = straTot.starNum
+          productInfo.halfStar = straTot.halfStar
+          that.productList.push(productInfo)
+        }
+        console.log(that.productList)
+      }
+    })
+  },
+  //计算星星个数
+  computeStrNum(score) {
+    console.log(score)
+    var starNum = []
+    var halfStarNum = []
+    //计算应该放几颗星星
+    var starComNum = (score / 2) - 0.5
+    for (let i = 0; i < starComNum; i++) {
+      starNum.push(true)
+    }
+    //计算放几颗半星
+    var starHalfNum = score % 2
+    if (starHalfNum == 1) {
+      halfStarNum = true
+    } else {
+      halfStarNum = false
+    }
+    var starTotal = {}
+    starTotal.starNum = starNum
+    starTotal.halfStar = halfStarNum
+    return starTotal
+  },
+  routePdtDetail(itemId) {
+    router.push({
+      uri: '/Pdt-detail',
+      params: { 'itemId': itemId }
+    })
   },
 }
 </script>
