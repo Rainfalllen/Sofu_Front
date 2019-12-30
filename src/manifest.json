@@ -12,7 +12,9 @@
     { "name": "system.fetch" },
     { "name": "system.storage" },
     { "name": "system.image" },
-    { "name": "system.media" }
+    { "name": "system.media" },
+    { "name": "system.request" },
+    { "name": "system.file" }
   ],
   "permissions": [
     { "origin": "*" }

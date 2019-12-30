@@ -6,10 +6,10 @@
     </div>
     <div class="input">
       <input type="text" placeholder="请输入手机号" class="phone-number" onchange="savePhoneNum"></input>
-      <div class="ver-code">
+      <!-- <div class="ver-code">
         <input type="text" placeholder="请输入验证码" class="ver-code-input"></input>
         <input type="button" value="获取验证码" class="ver-code-btn"></input>
-      </div>
+      </div> -->
     </div>
     <div class="to-next">
       <input type="button" value="下一步" class="to-next-btn" onclick="routePwdInput"></input>

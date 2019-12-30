@@ -41,6 +41,8 @@ import fetch from '@system.fetch'
 import image from '@system.image'
 import media from '@system.media'
 import prompt from '@system.prompt'
+import request from '@system.request'
+import file from '@system.file'
 export default {
   private: {
     text: '欢迎使用Sofu',
@@ -87,6 +89,7 @@ export default {
       success: function (imageData) {
         console.log(imageData)
         var size = imageData.size / 1000
+        that.userInfo.portrait_url=imageData.uri
         console.log(size)
         //如果图片大于50kb，则压缩到50k以下
         if (size > 50) {
@@ -103,11 +106,50 @@ export default {
               console.log(compressData)
               //将图片替换现在的头像
               that.userInfo.portrait_url = compressData.uri
+              var uploadUrl= that.$app.$def.urlPrefix + 'sofu/api/register/updatePortrait/'
+              console.log(compressData.uri)
+              var img={
+                uri:that.userInfo.portrait_url
+              }
+              var files=[]
+              files.push(img)
+              console.log(files)
+              request.upload({
+                url:uploadUrl,
+                method:'PUT',
+                files:files,
+                data:{
+                  user_id:that.userId
+                },
+                success:function(response){
+                  console.log(response.data)
+                }
+              })
             },
             fail: function (data, code) {
               console.log(`handling fail, code = ${code}`)
             }
           })
+        }else{
+          var uploadUrl= that.$app.$def.urlPrefix + 'sofu/api/register/updatePortrait/'
+              console.log(compressData.uri)
+              var img={
+                uri:compressData.uri
+              }
+              var files=[]
+              files.push(img)
+              console.log(files)
+              request.upload({
+                url:uploadUrl,
+                method:'POST',
+                files:files,
+                data:{
+                  user_id:that.userId
+                },
+                success:function(response){
+                  console.log(response.data)
+                }
+              })
         }
       }
     })

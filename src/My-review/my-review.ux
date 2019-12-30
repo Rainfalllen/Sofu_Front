@@ -21,9 +21,9 @@
           </div>
         </div>
         <div class="bottom-area">
-          <text class="like-text" onclick="deleteComment($item.comment_id)">删除</text>
+          <text class="like-text" onclick="deleteComment($item.comment_id,$idx)">删除</text>
           <div>
-            <image class="like-icon" src="../Common/like.svg" onclick="addLike($item.comment_id,$idx)"></image>
+            <image class="like-icon" src="../Common/like.svg"></image>
             <text class="like-text">{{$item.number_of_like}}</text>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default {
       params: { 'itemId': itemId }
     })
   },
-  deleteComment(comment_id){
+  deleteComment(comment_id,idx){
     console.log(comment_id)
     var that = this
     var url = that.$app.$def.urlPrefix + 'sofu/api/comment_item/delete_comment/'
@@ -93,7 +93,7 @@ export default {
         prompt.showToast({
           message:"删除成功"
         })
-        that.onShow()
+        that.review.splice(idx,1)
       }
     })
   }
@@ -153,6 +153,7 @@ export default {
 }
 
 .review-page .comment-area .comment-card .head-block .time-block .time-text {
+  padding-left: 10px;
   font-size: 40px;
 }
 

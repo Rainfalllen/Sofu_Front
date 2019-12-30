@@ -80,7 +80,7 @@
                 <image src="../Common/myInfo.svg" class="icon"></image>
                 <text class="meau-text">我的信息</text>
               </div>
-              <div class="meau-item">
+              <div class="meau-item" onclick="routeAllergy">
                 <image src="../Common/allergy.svg" class="icon"></image>
                 <text class="meau-text">过敏分析</text>
               </div>
@@ -371,6 +371,14 @@ export default {
         userId: this.userId
       }
     })
+  },
+  routeAllergy() {
+    router.push({
+      uri: '/Allergy',
+      params: {
+        userId: this.userId
+      }
+    })
   }
 }
 </script>
@@ -450,7 +458,7 @@ export default {
 
 .home-page .myskin-contain .report-block {
   width: 100%;
-  height: 600px;
+  height: 800px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -516,6 +524,7 @@ export default {
 .home-page .search-contain .search-block .search-ipt-block .search-input {
   width: 60%;
   border-radius: 60px;
+  font-size: 45px;
 }
 
 .home-page .search-contain .search-block .search-btn {

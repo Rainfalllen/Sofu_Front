@@ -4,53 +4,133 @@
         <div class="search-block">
             <div class="search-ipt-block">
                 <image class="search-icon" src="../Common/search.svg"></image>
-                <input type="text" class="search-input"></input>
+                <input type="text" class="search-input" placeholder="搜索添加过敏产品" onchange="savePdtName"></input>
             </div>
-            <input type="button" value="搜索" class="search-btn"></input>
+            <input type="button" value="搜索" class="search-btn" onclick="searchPdt"></input>
         </div>
         <div class="cut-line" />
+        <div show="{{!searching}}" class="item-block">
+            <text class="item-text">过敏物品列表</text>
+        </div>
         <div class="product-block" for="{{productList}}">
-            <div class="product-card" onclick="routeDetail">
-                <image src="../Common/logo.jpg" class="product-image"></image>
+            <div class="product-card" onclick="routePdtDetail($item.item_id)">
+                <image src="{{$item.url}}" class="product-image"></image>
                 <div class="product-des">
-                    <text class="product-title">{{$item.title}}</text>
-                    <text class="product-detail">{{$item.detail}}</text>
+                    <text class="product-title">{{$item.name}}</text>
+                    <div class="add-block" show="{{searching}}">
+                        <text class="add-text" onclick="addAllergy($item.item_id)">添加</text>
+                    </div>
+                    <!-- <div class="score-area">
+                        <div for="{{$item.starNum}}">
+                            <image src="../Common/star-yellow.svg" class="star-icon"></image>
+                        </div>
+                        <image src="../Common/star-half.svg" class="star-icon" show="{{$item.halfStar}}"></image>
+                    </div> -->
                 </div>
             </div>
-            <div class="cut-line" />
         </div>
-    </div>
+        <div show="{{!searching}}" class="item-block">
+            <text class="item-text">可能的过敏成分列表</text>
+        </div>
+        <div class="product-block" for="{{compositionList}}" show="{{!searching}}">
+            <div class="composition-area">
+                <text class="composition-text">{{$item.name}}</text>
+                <!-- <div class="score-area">
+                        <div for="{{$item.starNum}}">
+                            <image src="../Common/star-yellow.svg" class="star-icon"></image>
+                        </div>
+                        <image src="../Common/star-half.svg" class="star-icon" show="{{$item.halfStar}}"></image>
+                    </div> -->
+            </div>
+        </div>
 </template>
 
 <script>
 /* eslint-disable linebreak-style */
 /* eslint-disable indent */
 import router from '@system.router'
+import prompt from '@system.prompt'
+import fetch from '@system.fetch'
+import storage from '@system.storage'
 export default {
     private: {
         text: '欢迎使用Sofu',
         des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
-        productList: [
-            {
-                title: '这是一个非常长的标题',
-                detail: '这是一条非常短的评论，我竟无言以对。'
-            }, {
-                title: '这是一个非常长的标题',
-                detail: '这是一条非常短的评论，我竟无言以对。'
-            }, {
-                title: '这是一个非常长的标题',
-                detail: '这是一条非常短的评论，我竟无言以对。'
-            }, {
-                title: '这是一个非常长的标题',
-                detail: '这是一条非常短的评论，我竟无言以对。'
-            },
-        ]
+        productList: [],
+        compositionList: [],
+        searching: false
     },
-    routeDetail() {
-    router.push({
-      uri: '/Pdt-detail'
-    })
-  }
+    onInit(e) {
+        this.getAllergy(e.userId)
+    },
+    getAllergy(userId) {
+        //查找过敏产品列表及成分列表
+        var that = this
+        that.userId = userId
+        var url = this.$app.$def.urlPrefix + 'sofu/api/addallergy/get_allergy_item/'
+        fetch.fetch({
+            url: url,
+            responseType: 'text',
+            data: {
+                user_id: that.userId
+            },
+            success: function (response) {
+                console.log(response.data)
+                var jsonResponse = JSON.parse(response.data)
+                that.productList = []
+                for (let i = 0; i < jsonResponse.itemList.length; i++) {
+                    that.productList.push(jsonResponse.itemList[i])
+                }
+                that.compositionList = jsonResponse.compositionList
+                console.log(that.compositionList)
+            }
+        })
+    },
+
+    searchPdt() {
+        var that = this
+        var url = this.$app.$def.urlPrefix + 'sofu/api/search/searchItem/'
+        fetch.fetch({
+            url: url,
+            responseType: 'text',
+            data: {
+                name: this.serachPdt
+            },
+            success: function (response) {
+                console.log(response.data)
+                var jsonResponse = JSON.parse(response.data)
+                that.productList = []
+                that.searching = true
+                for (let i = 0; i < jsonResponse.length; i++) {
+                    that.productList.push(jsonResponse[i])
+                }
+            }
+        })
+    },
+    savePdtName(e) {
+        this.serachPdt = e.value
+        console.log(this.serachPdt)
+    },
+    //添加过敏产品
+    addAllergy(itemId) {
+        var that = this
+        var url = this.$app.$def.urlPrefix + 'sofu/api/addallergy/add_allergy_item/'
+        fetch.fetch({
+            url: url,
+            responseType: 'text',
+            method: 'POST',
+            data: {
+                user_id: that.userId,
+                item_id: itemId
+            },
+            success: function (response) {
+                console.log(response.data)
+                var jsonResponse = JSON.parse(response.data)
+                that.getAllergy(that.userId)
+                that.searching=false
+            }
+        })
+    }
 }
 </script>
 
@@ -85,6 +165,7 @@ export default {
 .search-pdt-page .search-block .search-ipt-block .search-input {
   width: 60%;
   border-radius: 60px;
+  font-size: 45px;
 }
 
 .search-pdt-page .search-block .search-btn {
@@ -97,39 +178,69 @@ export default {
   color: #ffffff;
 }
 
+.search-pdt-page .item-block {
+  justify-content: flex-start;
+  padding-left: 50px;
+  border-bottom: 1px solid #d8d8d8;
+  width: 100%;
+  height: 100px;
+}
+
+.search-pdt-page .item-block .item-text {
+  font-size: 50px;
+}
+
 .search-pdt-page .product-block {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .search-pdt-page .product-block .product-card {
-    margin-top: 40px;
-    height: 300px;
-    justify-content: center;
+  margin-top: 20px;
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #d8d8d8;
+  width: 100%;
 }
 
 .search-pdt-page .product-block .product-image {
-    width: 250px;
-    height: 250px;
-    margin-left: 40px;
+  width: 100px;
+  height: 100px;
+  margin-left: 40px;
 }
 
-.search-pdt-page .product-block .product-title{
-    font-size: 55px;
-    margin-top: 10px;
+.search-pdt-page .product-block .product-title {
+  font-size: 45px;
+  margin-top: 10px;
+  margin-left: 50px;
 }
 
-.search-pdt-page .product-block .product-detail{
-    margin-top: 20px;
+.search-pdt-page .product-block .product-detail {
+  margin-top: 20px;
 }
 
-.search-pdt-page .product-block .product-des{
-    width: 700px;
-    display: flex;
-    flex-direction: column;
-    margin-right: 40px;
-    margin-left: 30px;
+.search-pdt-page .product-block .product-des {
+  width: 700px;
+  display: flex;
+  flex-direction: row;
+  margin-right: 40px;
+  margin-left: 30px;
+  justify-content: space-between;
+}
+
+.search-pdt-page .product-block .product-des .add-block {
+  width: 20%;
+  justify-content: center;
+  background-color: #f0fa99;
+  height: 80px;
+  margin-left: 10px;
+}
+
+.search-pdt-page .product-block .product-des .add-block .add-text {
+  font-size: 45px;
 }
 
 .search-pdt-page .cut-line {
@@ -142,5 +253,17 @@ export default {
   width: 100%;
   height: 1px;
   background-color: #cfcfcf;
+}
+
+.composition-text {
+  font-size: 45px;
+}
+
+.composition-area {
+  justify-content: flex-start;
+  padding-left: 50px;
+  margin-top: 30px;
+  border-bottom: 1px solid #d8d8d8;
+  padding-bottom: 30px;
 }
 </style>

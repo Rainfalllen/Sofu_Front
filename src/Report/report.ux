@@ -1,113 +1,52 @@
 <template>
-    <!-- template里只能有一个根节点 -->
-    <div class="wrap">
-        <stack>
-            <div class="circle"></div>
-            <div class="top"></div>
-            <div class="halfcircle"></div>
-            <div class="bottom"></div>
-        </stack>
-    </div>
+  <!-- template里只能有一个根节点 -->
+  <div class="report-page">
+    <richtext type="html" class="report">{{report}}</richtext>
+  </div>
 </template>
 
 <script>
+import router from '@system.router'
+import prompt from '@system.prompt'
+import fetch from '@system.fetch'
+import storage from '@system.storage'
 /* eslint-disable indent */
 /* eslint-disable linebreak-style */
 export default {
-    private: {
-        text: '欢迎使用Sofu',
-        des: 'Sofu是基于您的肤质进行定制推荐的快应用。'
-    }
+  private: {
+    text: '欢迎使用Sofu',
+    des: 'Sofu是基于您的肤质进行定制推荐的快应用。',
+    report:String
+  },
+  onInit(e) {
+    var that = this
+    that.userId = e.userId
+    //获得肤质报告
+    var reportUrl = that.$app.$def.urlPrefix + 'sofu/api/skin_report/report/'
+    fetch.fetch({
+      url: reportUrl,
+      method: 'GET',
+      data: {
+        user_id: that.userId
+      },
+      success: function (response) {
+        var jsonResponse = JSON.parse(response.data)
+        that.report = jsonResponse.report
+        console.log(that.report)
+      }
+    })
+  },
 }
 </script>
 
 <style>
-.warp {
-  height: 200px;
-  width: 200px;
+.report-page {
+  flex-direction: column;
+  align-items: center;
 }
 
-.circle {
-  height: 200px;
-  width: 200px;
-  box-sizing: border-box;
-  border: 20px solid red;
-  border-radius: 100px;
-  /* position: absolute; */
-  content: "";
-}
-
-.halfcircle {
-  /* position: absolute; */
-  margin-top: 100px;
-  height: 100px;
-  width: 200px;
-  border-bottom-left-radius: 100px;
-  border-bottom-right-radius: 100px;
-  /* background-color: #ffffff; */
-  border-left: 20px solid red;
-  border-right: 20px solid red;
-  border-bottom: 20px solid red;
-}
-
-.top {
-  position: absolute;
-  left: 0px;
-  width: 200px;
-  height: 100px;
-  background-color: #ffffff;
-  top: 0;
-  width: 200px;
-  height: 100px;
-  transform-origin: 100px 100px;
-  animation-name: test;
-  animation-timing-function: linear;
-  animation-duration: 1000ms;
-  animation-fill-mode: forwards;
-  animation-delay: 1000ms;
-}
-
-.bottom {
-  position: absolute;
-  left: 0px;
-  width: 200px;
-  height: 100px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  width: 200px;
-  height: 100px;
-  transform-origin: 100px 0px;
-  animation-name: test;
-  animation-timing-function: linear;
-  animation-duration: 1000ms;
-  animation-fill-mode: forwards;
-  margin-top: 100px;
-}
-
-.top-ani {
-  width: 200px;
-  height: 200px;
-  background-color: #00ffff;
-}
-
-.test {
-  animation-name: test;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-}
-
-@keyframes test {
-  0% {
-    transform: rotate(0deg);
-    opacity: 1;
-  }
-  99% {
-    transform: rotate(180deg);
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(180deg);
-    opacity: 0;
-  }
+.report-page{
+  margin: 80px;
+  font-size: 40px;
 }
 </style>
