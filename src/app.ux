@@ -13,7 +13,9 @@ export default {
   //本地（电脑）
   //urlPrefix: 'http://192.168.137.1:8000/',
   //本地（手机）
-  urlPrefix: 'http://192.168.43.12:8000/',
+  //urlPrefix: 'http://192.168.43.12:8000/',
+  //远程
+  urlPrefix: 'http://sofu.dormassistant.wang:8000/',
   //检查登录状态
   onCreate() {
     storage.get({

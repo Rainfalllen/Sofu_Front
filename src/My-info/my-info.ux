@@ -30,6 +30,7 @@
     </div>
     <div class="commit-area">
       <input type="button" value="保存" class="commit-btn" onclick="commitUserInfo"></input>
+      <input type="button" value="退出" class="commit-btn" onclick="logout"></input>
     </div>
   </div>
 </template>
@@ -108,15 +109,12 @@ export default {
               that.userInfo.portrait_url = compressData.uri
               var uploadUrl= that.$app.$def.urlPrefix + 'sofu/api/register/updatePortrait/'
               console.log(compressData.uri)
-              var img={
+              var files=[{
                 uri:that.userInfo.portrait_url
-              }
-              var files=[]
-              files.push(img)
+              }]
               console.log(files)
               request.upload({
                 url:uploadUrl,
-                method:'PUT',
                 files:files,
                 data:{
                   user_id:that.userId
@@ -133,15 +131,12 @@ export default {
         }else{
           var uploadUrl= that.$app.$def.urlPrefix + 'sofu/api/register/updatePortrait/'
               console.log(compressData.uri)
-              var img={
-                uri:compressData.uri
-              }
-              var files=[]
-              files.push(img)
+              var files=[{
+                uri:that.userInfo.portrait_url
+              }]
               console.log(files)
               request.upload({
                 url:uploadUrl,
-                method:'POST',
                 files:files,
                 data:{
                   user_id:that.userId
@@ -203,6 +198,15 @@ export default {
             })
             router.back()
           }
+        })
+      }
+    })
+  },
+  logout(){
+    storage.clear({
+      success:function(data){
+        router.replace({
+          uri:'/Index'
         })
       }
     })
@@ -280,6 +284,8 @@ export default {
 
 .myinfo-page .commit-area .commit-btn {
   width: 400px;
+  margin-left: 50px;
+  margin-right: 50px;
   height: 150px;
   font-size: 50px;
   background-color: #f68bcd;

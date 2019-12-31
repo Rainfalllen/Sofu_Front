@@ -101,7 +101,7 @@ export default {
     //如果到最后一个
     if (this.quesConunt+1 == this.question.length) {
       this.answerList[this.quesConunt] = e
-      this.finishQuestion(this.typecount+1, this.typeNum[this.typecount])
+      this.finishQuestion(this.typecount+1, this.typeNum[this.typecount],this.typeNum[this.typecount-1])
     } 
     if (this.quesConunt +1!= this.question.length) {
       this.answerList[this.quesConunt] = e
@@ -136,12 +136,13 @@ export default {
       this.typecount++
     }
   },
-  finishQuestion(type, typecount) {
-    console.log(type)
+  finishQuestion(type, typecount,start) {
+    console.log(typecount)
     console.log(this.answerList)
     var that = this
     //将answeList切分为需要的子数组
-    var answerList = this.answerList.slice((0 - typecount))
+    var quesConunt=typecount-start
+    var answerList = this.answerList.slice(0 - quesConunt)
     console.log("456  " + answerList)
     var url = this.$app.$def.urlPrefix + 'sofu/api/skin_type/post_type/'
     fetch.fetch({

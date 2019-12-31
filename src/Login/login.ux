@@ -51,20 +51,30 @@ export default {
       success: function (response) {
         console.log(response.data)
         var jsonResponse = JSON.parse(response.data)
-        storage.set({
-          key: 'userPhone',
-          value: that.phoneNum,
-        })
-        storage.set({
-          key: 'userId',
-          value: jsonResponse.user_id,
-          success: function (data) {
-            console.log(data + "55555")
-            router.replace({
-              uri: '/Home'
-            })
-          }
-        })
+        if (jsonResponse.state == 1) {
+          storage.set({
+            key: 'userPhone',
+            value: that.phoneNum,
+          })
+          storage.set({
+            key: 'userId',
+            value: jsonResponse.user_id,
+            success: function (data) {
+              console.log(data + "55555")
+              router.replace({
+                uri: '/Home'
+              })
+            }
+          })
+        }else if(jsonResponse.state==2){
+          prompt.showToast({
+            message:"密码错误"
+          })
+        }else if(jsonResponse.state==3){
+          prompt.showToast({
+            message:"用户不存在"
+          })
+        }
       }
     })
 
