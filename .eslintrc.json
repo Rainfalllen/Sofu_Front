@@ -54,10 +54,12 @@
       }
     ],
     "linebreak-style": [
-      0,
-      "error",
-      "windows"
+      "warn",
+      "unix"
     ],
-    "semi": 0
+    "semi": [
+      "warn",
+      "never"
+    ]
   }
 }
